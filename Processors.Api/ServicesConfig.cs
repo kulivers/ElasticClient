@@ -1,4 +1,7 @@
-﻿namespace Processor;
+﻿using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
+
+namespace Processor;
 
 public class ServicesConfig
 {
@@ -23,6 +26,27 @@ public class ServiceConfig
         }
     }
 
+    public static ServiceConfig FromFile(string path)
+    {
+        var deserializer = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance) //todo egor mb it is not camel case
+            .Build();
+        var fileContent = File.ReadAllText(path);
+        
+        return deserializer.Deserialize<ServiceConfig>(fileContent);
+    }
+
+    public override bool Equals(object? otherObj)
+    {
+        if (otherObj is not ServiceConfig other)
+            return false;
+        return Dll == other.Dll && Config == other.Config && ServiceName == other.ServiceName;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Dll, Config, ServiceName);
+    }
 }
 
 public enum ConfigType

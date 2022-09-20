@@ -4,10 +4,14 @@ using ElasticClient;
 [ProcessElement(nameof(EsRequest), ProcessingAttributeBehaviourType.Input)]
 public class EsRequest
 {
-    private HostConfig HostConfig { get; }
+    public HostConfig HostConfig { get; set;}
+    public RequestParameters RequestParameters { get; set;}
+    public string Data { get; set;}
 
-    private RequestParameters RequestParameters { get; }
-    private string Data { get; }
+    public EsRequest()
+    {
+        
+    }
 
     public EsRequest(HostConfig hostConfig, RequestParameters requestParameters, string data)
     {

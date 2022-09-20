@@ -6,38 +6,29 @@ using ProcessorsRunner;
 
 internal class ProcessorContainer : IProcessorsContainer
 {
-    public HashSet<IProcessor> Processors { get; }
-    
+    public List<IProcessor?> Processors { get; }
 
     public ProcessorContainer(ServicesConfig servicesConfig)
     {
-        Processors = new HashSet<IProcessor>();
+        Processors = new List<IProcessor?>();
         foreach (var config in servicesConfig.Services)
         {
             var assembly = Assembly.LoadFrom(config.Dll);
-            var fabrics = FindFactories(assembly.GetTypes());
-            foreach (var factoryType in fabrics)
+            var assTypes = assembly.GetTypes();
+            var factories = FindFactories(assTypes);
+            foreach (var factoryType in factories)
             {
-
-                // var factoryInterface = fabricType.GetInterfaces()
-                //     .FirstOrDefault(type => type.Name == "IProcessorFactory`2");
-                // var genericArgumentTypes = factoryInterface.GenericTypeArguments;
-                // Type inType = genericArgumentTypes.ElementAt(0);
-                // Type outType = genericArgumentTypes.ElementAt(1);
-                // Type serviceType = fabricMethod.ReturnParameter.ParameterType; //returnType
-                
                 var factoryInstance = Activator.CreateInstance(factoryType);
-                var factoryMethod = factoryType.GetMethod("GetOrCreateService");
+                var factoryMethodName = typeof(IProcessorFactory<,>).GetMethods().First().Name;
+                var factoryMethod = factoryType.GetMethod(factoryMethodName);
                 var serviceInstance = factoryMethod?.Invoke(factoryInstance, new[] { config });
                 if (serviceInstance is IProcessor processor)
-                {
-                    Add(processor);
-                }
+                    AddService(processor);
             }
         }
     }
 
-    public IEnumerable<Type> FindFactories(IEnumerable<Type> types)
+    private IEnumerable<Type> FindFactories(IEnumerable<Type> types)
     {
         var typesWithAttribute = types.Where(it =>
             it.GetCustomAttributes().Any(attribute => attribute.GetType() == typeof(ProcessElementAttribute)));
@@ -51,15 +42,21 @@ internal class ProcessorContainer : IProcessorsContainer
         }
     }
 
-    public void Add(IProcessor processor) => Processors.Add(processor);
+    public void AddService(IProcessor? processor) => Processors.Add(processor);
 
-    public IEnumerator<IProcessor> GetEnumerator()
+    public IProcessor<TIn, TOut>? GetService<TIn, TOut>()
     {
-        return Processors.GetEnumerator();
+        IProcessor<TIn, TOut>? toReturn = null;
+        foreach (var processor in Processors)
+        {
+            if (processor is IProcessor<TIn, TOut> other)
+                toReturn = other;
+        }
+
+        return toReturn;
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return ((IEnumerable)Processors).GetEnumerator();
-    }
+    public IProcessor? GetService(string serviceName) => Processors.FirstOrDefault(p => p?.ServiceName == serviceName);
+    public IEnumerator<IProcessor> GetEnumerator() => Processors.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Processors).GetEnumerator();
 }
