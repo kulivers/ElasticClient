@@ -6,6 +6,27 @@ namespace Processor;
 public class ServicesConfig
 {
     public IEnumerable<ServiceConfig> Services { get; set; }
+
+    public ServicesConfig()
+    {
+        
+    }
+
+    public ServicesConfig(IEnumerable<ServiceConfig> services)
+    {
+        Services = services;
+    }
+
+    public static ServicesConfig FromYaml(string path)
+    {
+        if (!path.EndsWith(".yaml"))
+            throw new ArgumentException("wrong type of file, need to be .yaml");
+        var deserializer = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance) //todo egor mb it is not camel case
+            .Build();
+        var fileContent = File.ReadAllText(path);
+        return deserializer.Deserialize<ServicesConfig>(fileContent);
+    }
 }
 
 public class ServiceConfig
@@ -26,8 +47,10 @@ public class ServiceConfig
         }
     }
 
-    public static ServiceConfig FromFile(string path)
+    public static ServiceConfig FromYaml(string path)
     {
+        if (!path.EndsWith(".yaml"))
+            throw new ArgumentException("wrong type of file. need to be .yaml");
         var deserializer = new DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance) //todo egor mb it is not camel case
             .Build();

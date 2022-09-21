@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ElasticClient\ElasticClient.csproj" />
+      <ProjectReference Include="..\Kafka\Kafka.csproj" />
       <ProjectReference Include="..\Processors.Api\Processors.Api.csproj" />
     </ItemGroup>
 

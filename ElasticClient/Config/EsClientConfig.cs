@@ -6,13 +6,15 @@ namespace ElasticClient;
 
 public class EsClientConfig
 {
-    public static EsClientConfig GetFromFile(string filePath)
+    public static EsClientConfig FromYaml(string path)
     {
+        if (!path.EndsWith(".yaml"))
+            throw new ArgumentException("wrong type of file. need to be .yaml");
         var deserializer = new DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance) //todo egor mb it is not camel case
             .Build();
-        var fileContent = File.ReadAllText(filePath);
-        
+        var fileContent = File.ReadAllText(path);
+
         return deserializer.Deserialize<EsClientConfig>(fileContent);
     }
 

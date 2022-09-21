@@ -14,7 +14,7 @@ public class ElasticProcessor : IProcessor<EsRequest, EsResponse>
         if (config.ConfigType != ConfigType.Yaml)
             throw new NotImplementedException();
         ServiceConfig = config;
-        var clientConfig = EsClientConfig.GetFromFile(config.Config);
+        var clientConfig = EsClientConfig.FromYaml(config.Config);
         _esClient = new EsClient(clientConfig);
     }
 

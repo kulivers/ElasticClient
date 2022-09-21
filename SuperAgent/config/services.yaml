@@ -1,0 +1,13 @@
+﻿services:
+  -
+    dll: D:\Work\ElasticClient\ElasticProcessor\bin\Debug\net6.0\ElasticProcessor.dll
+    config: D:\Work\ElasticClient\SuperAgent\config\elastic.yaml
+    serviceName: Elasticsearch writer1 
+  -
+    dll: D:\Work\ElasticClient\ElasticProcessor\bin\Debug\net6.0\ElasticProcessor.dll
+    config: D:\Work\ElasticClient\SuperAgent\config\elastic.yaml
+    serviceName: Elasticsearch writer2
+  -
+    dll: D:\Work\ElasticClient\ElasticProcessor\bin\Debug\net6.0\ElasticProcessor.dll
+    config: D:\Work\ElasticClient\SuperAgent\config\elastic.yaml
+    serviceName: Elasticsearch writer3
