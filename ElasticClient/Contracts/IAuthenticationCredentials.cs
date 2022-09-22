@@ -1,6 +1,4 @@
-﻿
-
-namespace ElasticClient;
+﻿namespace ElasticClient;
 
 public interface IAuthenticationCredentials
 {

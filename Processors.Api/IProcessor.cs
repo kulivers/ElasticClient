@@ -4,7 +4,7 @@ public interface IProcessor
 {
     string ServiceName { get; }
     ServiceConfig ServiceConfig { get; }
-    Task CheckAvailable();
+    Task CheckHealth();
 
 }
 

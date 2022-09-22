@@ -34,17 +34,29 @@ public class EsClientConfig
 
     public IAuthenticationCredentials GetAuthCredentials()
     {
-        return Authentication.Type.ToUpper() switch
+        switch (Authentication.Type.ToUpper())
         {
-            "BASIC" => Authentication.Token == null
-                ? new BasicCredentials(Authentication.Username, Authentication.Password)
-                : new BasicCredentials(Authentication.Token),
-            "APIKEY" => Authentication.Token == null
-                ? new ApiKeyCredentials(Authentication.Username, Authentication.Password)
-                : new ApiKeyCredentials(Authentication.Token),
-            "BARRIER" => new BarrierCredentials(Authentication.Token),
-            "OAUTH" => new BarrierCredentials(Authentication.Token),
-            _ => throw new Exception("Unknown authentication type")
-        };
+            case "BASIC":
+            {
+                return Authentication.Token == null
+                    ? new BasicCredentials(Authentication.Username!, Authentication.Password!)
+                    : new BasicCredentials(Authentication.Token);
+            }
+            case "APIKEY":
+            {
+                return Authentication.Token == null
+                    ? new ApiKeyCredentials(Authentication.Username!, Authentication.Password!)
+                    : new ApiKeyCredentials(Authentication.Token);
+            }
+            case "BARRIER":
+            case "OAUTH":
+            {
+                return new BarrierCredentials(Authentication.Token!);
+            }
+            default:
+            {
+                throw new Exception("Unknown authentication type");
+            }
+        }
     }
 }

@@ -21,11 +21,44 @@ public class SuperAgent
         InitConnectors(connectorsConfig);
         Validate();
     }
+    private void InitConnectors(ConnectorsConfig connectorsConfig)
+    {
+        Connectors = new List<IConnector>();
+        foreach (var connectorConfig in connectorsConfig.Connectors)
+        {
+            if (connectorConfig.IoServiceType == IoType.Kafka)
+            {
+                Connectors.Add(new KafkaConnector(connectorConfig));
+            }
+        }
+    }
+
+    public void Start()
+    {
+        MapConnectors();
+    }
+
+    private void MapConnectors()
+    {
+        foreach (var connector in Connectors)
+        {
+            MapConnector(connector);
+        }
+    }
+
+    private void MapConnector(IConnector connector)
+    {
+        connector.OnReceive += (_, data) =>
+        {
+            ProcessorsContainer.Process(connector.DestinationService, data);
+        };
+        connector.StartReceive(CancellationToken.None);
+    }
 
     private void Validate()
     {
         ThrowIfConfigsNotValid();
-        CheckProcessorsConnectorsOk();
+        CheckHealth();
     }
 
     private void ThrowIfConfigsNotValid()
@@ -58,43 +91,17 @@ public class SuperAgent
         }
     }
 
-    private void CheckProcessorsConnectorsOk()
+    private void CheckHealth()
     {
         foreach (var processor in ProcessorsContainer)
         {
-            processor.CheckAvailable();
+            processor.CheckHealth();
         }
         foreach (var connector in Connectors)
         {
-            connector.CheckAvailable();
+            connector.CheckHealth();
         }
     }
 
-    public void Start()
-    {
-        MapConnectors();
-    }
-
-    private void InitConnectors(ConnectorsConfig connectorsConfig)
-    {
-        Connectors = new List<IConnector>();
-        foreach (var connectorConfig in connectorsConfig.Connectors)
-        {
-            if (connectorConfig.IoServiceType == IoType.Kafka) Connectors.Add(new KafkaConnector(connectorConfig));
-        }
-    }
-
-    private void MapConnectors()
-    {
-        foreach (var connector in Connectors)
-        {
-            MapConnector(connector);
-        }
-    }
-
-    private void MapConnector(IConnector connector)
-    {
-        connector.OnReceive += (_, data) => { ProcessorsContainer.Process(connector.DestinationService, data); };
-        connector.StartReceive(CancellationToken.None);
-    }
+    
 }

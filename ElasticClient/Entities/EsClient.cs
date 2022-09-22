@@ -1,4 +1,3 @@
-using System.Net;
 using System.Net.Http.Headers;
 using ElasticClient;
 using ElasticClient.Extensions;
@@ -14,22 +13,19 @@ public class EsClient
         AuthCredentials = esClientConfig.GetAuthCredentials();
     }
 
-    public EsClient(HostConfig hostConfig, IAuthenticationCredentials? authCredentials = null)
-    {
-        HostConfig = hostConfig;
-        AuthCredentials = authCredentials;
-    }
-
     private HttpClient Client
     {
         get
         {
             var httpClient = new HttpClient();
+
             if (AuthCredentials != null)
+            {
                 httpClient.DefaultRequestHeaders.Add("Authorization", AuthCredentials.ToHeaderValue());
-            httpClient.DefaultRequestHeaders
-                .Accept
-                .Add(new MediaTypeWithQualityHeaderValue("application/json")); //ACCEPT header
+            }
+
+            var acceptHeader = new MediaTypeWithQualityHeaderValue("application/json");
+            httpClient.DefaultRequestHeaders.Accept.Add(acceptHeader); //ACCEPT header
             return httpClient;
         }
     }
@@ -37,12 +33,18 @@ public class EsClient
     public async Task CheckElasticAvailable(int secondsToResponse)
     {
         var cts = new CancellationTokenSource(new TimeSpan(secondsToResponse));
-        var responseMessage = await Client.GetAsync(new Uri($"https://{HostConfig.Host}:{HostConfig.Port}/_cat/health"), cts.Token);
+        var requestIri = new Uri($"https://{HostConfig.Host}:{HostConfig.Port}/_cat/health");
+        var responseMessage = await Client.GetAsync(requestIri, cts.Token);
+
         if (responseMessage == null)
-            throw new HttpRequestException($"ElasticSearch server {HostConfig.Host}:{HostConfig.Port} is not available");
+        {
+            throw new HttpRequestException(
+                $"ElasticSearch server {HostConfig.Host}:{HostConfig.Port} is not available");
+        }
+
         if (!responseMessage.IsSuccessStatusCode)
         {
-            var response = await responseMessage.Content.ReadAsStringAsync();
+            var response = await responseMessage.Content.ReadAsStringAsync(CancellationToken.None);
             throw new HttpRequestException($"ElasticSearch server is not healthy. Output: {response}"); //todo ask
         }
     }

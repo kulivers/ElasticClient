@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Headers;
-
-namespace ElasticClient.Extensions;
+﻿namespace ElasticClient.Extensions;
 
 public static  class HttpResponseMessageExtentions
 {

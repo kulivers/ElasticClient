@@ -1,6 +1,4 @@
-﻿using ElasticClient.Entities;
-
-namespace ElasticClient;
+﻿namespace ElasticClient;
 
 public class AuthenticationConfig 
 {

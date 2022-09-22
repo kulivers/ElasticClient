@@ -20,7 +20,9 @@ public class ServicesConfig
     public static ServicesConfig FromYaml(string path)
     {
         if (!path.EndsWith(".yaml"))
+        {
             throw new ArgumentException("wrong type of file, need to be .yaml");
+        }
         var deserializer = new DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance) //todo egor mb it is not camel case
             .Build();
@@ -45,18 +47,6 @@ public class ServiceConfig
             if (Config.EndsWith("xml")) return ConfigType.Xml;
             throw new NotImplementedException("Unsupported type of config");
         }
-    }
-
-    public static ServiceConfig FromYaml(string path)
-    {
-        if (!path.EndsWith(".yaml"))
-            throw new ArgumentException("wrong type of file. need to be .yaml");
-        var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance) //todo egor mb it is not camel case
-            .Build();
-        var fileContent = File.ReadAllText(path);
-        
-        return deserializer.Deserialize<ServiceConfig>(fileContent);
     }
 
     public override bool Equals(object? otherObj)

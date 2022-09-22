@@ -1,8 +1,0 @@
-connectors:
-  -
-    destination: Elasticsearch writer1
-    ioServiceType: kafka
-    properties:
-      config: D:\Work\ElasticClient\Agent\config\kafkaConfig.yaml
-      inputTopic: requestTopic
-      outputTopic: responseTopic

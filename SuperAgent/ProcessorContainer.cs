@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Reflection;
 using ElasticClient;
-using Microsoft.VisualBasic.CompilerServices;
 using Newtonsoft.Json;
 using Processor;
 using ProcessorsRunner;
@@ -25,9 +24,13 @@ public class ProcessorContainer : IProcessorsContainer
                 var factoryMethod = factoryType.GetMethod(factoryMethodName);
                 var serviceInstance = factoryMethod?.Invoke(factoryInstance, new[] { config });
                 if (serviceInstance is IProcessor processor)
-                    AddService(processor);
+                {
+                    AddProcessor(processor);
+                }
                 else
+                {
                     throw new ApplicationException($"Cant load service {serviceInstance}");
+                }
             }
         }
     }
@@ -41,14 +44,19 @@ public class ProcessorContainer : IProcessorsContainer
             foreach (var attribute in type.GetCustomAttributes())
             {
                 if (attribute is ProcessElementAttribute { Type: ProcessingAttributeBehaviourType.Factory })
+                {
                     yield return type;
+                }
             }
         }
     }
 
-    public void AddService(IProcessor? processor) => Processors.Add(processor);
+    public void AddProcessor(IProcessor? processor)
+    {
+        Processors.Add(processor);
+    }
 
-    public IProcessor<TIn, TOut>? GetService<TIn, TOut>()
+    public IProcessor<TIn, TOut>? GetProcessor<TIn, TOut>()
     {
         IProcessor<TIn, TOut>? toReturn = null;
         foreach (var processor in Processors)
@@ -60,13 +68,19 @@ public class ProcessorContainer : IProcessorsContainer
         return toReturn;
     }
 
-    public IProcessor? GetService(string serviceName) => Processors.FirstOrDefault(p => p?.ServiceName == serviceName);
+    public IProcessor? GetProcessor(string serviceName)
+    {
+        return Processors.FirstOrDefault(p => p?.ServiceName == serviceName);
+    }
 
     public TOut? Process<TIn, TOut>(string serviceName, TIn input)
     {
-        var processor = (IProcessor<TIn, TOut>)GetService(serviceName);
+        var processor = (IProcessor<TIn, TOut>)GetProcessor(serviceName)!;
         if (processor == null)
+        {
             throw new InvalidOperationException($"Unknown processor: {serviceName}");
+        }
+        
         var processorType = processor.GetType();
         var (tIn, tOut) = GetInputOutputTypes(processorType);
 
@@ -85,14 +99,19 @@ public class ProcessorContainer : IProcessorsContainer
         return (tIn, tOut);
     }
 
-    private static bool MyInterfaceFilter(Type typeObj, object? criteriaObj) =>
-        typeObj.ToString().Contains(criteriaObj?.ToString() ?? string.Empty);
+    private static bool MyInterfaceFilter(Type typeObj, object? criteriaObj)
+    {
+        return typeObj.ToString().Contains(criteriaObj?.ToString() ?? string.Empty);
+    }
 
     public object? Process(string processorName, string message)
     {
-        var processor = GetService(processorName);
+        var processor = GetProcessor(processorName);
         if (processor == null)
+        {
             throw new InvalidOperationException($"Unknown processor: {processorName}");
+        }
+        
         var processorType = processor.GetType();
         var (tIn, tOut) = GetInputOutputTypes(processorType);
         var input = JsonConvert.DeserializeObject(message, tIn);
@@ -102,6 +121,12 @@ public class ProcessorContainer : IProcessorsContainer
         return method.Invoke(processor, new[] { input });
     }
 
-    public IEnumerator<IProcessor> GetEnumerator() => Processors.GetEnumerator();
-    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Processors).GetEnumerator();
+    public IEnumerator<IProcessor> GetEnumerator()
+    {
+        return Processors.GetEnumerator();
+    }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable)Processors).GetEnumerator();
+    }
 }

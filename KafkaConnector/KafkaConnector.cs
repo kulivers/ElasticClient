@@ -14,7 +14,7 @@ public class KafkaConnector : IConnector
     private IConsumer<int, string> StringConsumer { get; }
     private IProducer<int, string> StringProducer { get; }
 
-    public event EventHandler<string> OnReceive;
+    public event EventHandler<string>? OnReceive;
 
     public KafkaConnector(ConnectorConfig connectorsConfig)
     {
@@ -26,16 +26,7 @@ public class KafkaConnector : IConnector
             : null;
         StringConsumer = new ConsumerFactory(ConfigPath).CreateStringConsumer();
         StringProducer = new ProducerFactory(ConfigPath).CreateStringProvider();
-        CheckAvailable();
-    }
-
-    public async Task<object?> Send(string message, CancellationToken token = default)
-    {
-        if (OutputTopic == null)
-            return null;
-        var kafkaMessage = new Message<int, string>() { Value = message };
-        var deliveryResult = await StringProducer.ProduceAsync(OutputTopic, kafkaMessage, token);
-        return deliveryResult;
+        CheckHealth();
     }
 
     public async Task StartReceive(CancellationToken token)
@@ -50,17 +41,23 @@ public class KafkaConnector : IConnector
         }
     }
 
-    public void CheckAvailable()
+    public void CheckHealth()
     {
         var config = new ProducerFactory(ConfigPath).ProducerConfig1;
         var adminClient = new AdminClientBuilder(new AdminClientConfig(config)).Build();
         var metadata = adminClient.GetMetadata(InputTopic, new TimeSpan(0,0,10));
+        
         if (metadata==null)
+        {
             throw new IOException($"Couldnt get metadata from {InputTopic} topic for 10 seconds");
+        }
+        
         foreach (var topic in metadata.Topics)
         {
             if (topic.Error.IsError)
+            {
                 throw new IOException($"topic {topic.Topic} is not available. Reason: {topic.Error.Reason}");
+            }
         }
     }
 

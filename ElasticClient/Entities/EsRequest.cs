@@ -4,13 +4,12 @@ using ElasticClient;
 [ProcessElement(nameof(EsRequest), ProcessingAttributeBehaviourType.Input)]
 public class EsRequest
 {
-    public HostConfig HostConfig { get; set;}
-    public RequestParameters RequestParameters { get; set;}
-    public string Data { get; set;}
+    public HostConfig HostConfig { get; set; }
+    public RequestParameters RequestParameters { get; set; }
+    public string Data { get; set; }
 
     public EsRequest()
     {
-        
     }
 
     public EsRequest(HostConfig hostConfig, RequestParameters requestParameters, string data)
@@ -24,9 +23,11 @@ public class EsRequest
 
     private Uri BuildUri(HostConfig host, RequestParameters request)
     {
-        return request.DocId != null
-            ? new Uri($"{host.Scheme}://{host.Host}:{host.Port}/{request.Index}/{request.Type}/{request.DocId}")
-            : new Uri($"{host.Scheme}://{host.Host}:{host.Port}/{request.Index}/{request.Type}");
+        if (request.DocId != null)
+        {
+            return new Uri($"{host.Scheme}://{host.Host}:{host.Port}/{request.Index}/{request.Type}/{request.DocId}");
+        }
+        return new Uri($"{host.Scheme}://{host.Host}:{host.Port}/{request.Index}/{request.Type}");
     }
 
     public HttpRequestMessage ToHttpRequestMessage()
@@ -39,5 +40,3 @@ public class EsRequest
         };
     }
 }
-
-

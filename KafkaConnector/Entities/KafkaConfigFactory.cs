@@ -7,7 +7,7 @@ namespace KafkaInteractor
 {
     public class KafkaConfigFactory
     {
-        public ClientConfig ClientConfig1 { get; }
+        private ClientConfig ClientConfig { get; }
 
         private static ClientConfig FromYaml(string path)
         {
@@ -21,19 +21,17 @@ namespace KafkaInteractor
             return deserializer.Deserialize<ClientConfig>(fileContent);
         }
 
-        public KafkaConfigFactory(string path)
+        public KafkaConfigFactory(string path) : this(FromYaml(path))
         {
-            ClientConfig1 = FromYaml(path);
+            
         }
-
         public KafkaConfigFactory(ClientConfig clientConfig)
         {
-            ClientConfig1 = clientConfig;
+            ClientConfig = clientConfig;
         }
-
         public ProducerConfig GetDefaultProducerConfig()
         {
-            var producerConfig = new ProducerConfig(ClientConfig1);
+            var producerConfig = new ProducerConfig(ClientConfig);
             producerConfig.ClientId ??= Dns.GetHostName();
             producerConfig.Partitioner ??= Partitioner.Consistent;
             producerConfig.Acks ??= Acks.All;
@@ -42,7 +40,7 @@ namespace KafkaInteractor
 
         public ConsumerConfig GetDefaultConsumerConfig()
         {
-            var consumerConfig = new ConsumerConfig(ClientConfig1);
+            var consumerConfig = new ConsumerConfig(ClientConfig);
             consumerConfig.GroupId ??= "foo";
             consumerConfig.AutoOffsetReset ??= AutoOffsetReset.Latest;
             return consumerConfig;
