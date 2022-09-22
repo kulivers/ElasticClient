@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Reflection;
 using ElasticClient;
+using Microsoft.VisualBasic.CompilerServices;
 using Newtonsoft.Json;
 using Processor;
 using ProcessorsRunner;
@@ -25,6 +26,8 @@ public class ProcessorContainer : IProcessorsContainer
                 var serviceInstance = factoryMethod?.Invoke(factoryInstance, new[] { config });
                 if (serviceInstance is IProcessor processor)
                     AddService(processor);
+                else
+                    throw new ApplicationException($"Cant load service {serviceInstance}");
             }
         }
     }

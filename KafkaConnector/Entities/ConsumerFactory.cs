@@ -6,25 +6,25 @@ namespace KafkaInteractor
     
     public class ConsumerFactory 
     {
-        private readonly ConsumerConfig _consumerConfig;
+        public ConsumerConfig ConsumerConfig { get; }
 
         public ConsumerFactory(ConsumerConfig consumerConfig)
         {
-            _consumerConfig = consumerConfig;
+            ConsumerConfig = consumerConfig;
         }
 
         public ConsumerFactory(string configPath)
         {
-            _consumerConfig = new KafkaConfigFactory(configPath).GetDefaultConsumerConfig();
+            ConsumerConfig = new KafkaConfigFactory(configPath).GetDefaultConsumerConfig();
         }
         
         public ConsumerFactory(ClientConfig config)
         {
-            _consumerConfig = new KafkaConfigFactory(config).GetDefaultConsumerConfig();
+            ConsumerConfig = new KafkaConfigFactory(config).GetDefaultConsumerConfig();
         }
 
         
         public IConsumer<int, string> CreateStringConsumer() =>
-            new ConsumerBuilder<int, string>(_consumerConfig).SetValueDeserializer(new Deserializers.StringDeserializer()).Build();
+            new ConsumerBuilder<int, string>(ConsumerConfig).SetValueDeserializer(new Deserializers.StringDeserializer()).Build();
     }
 }

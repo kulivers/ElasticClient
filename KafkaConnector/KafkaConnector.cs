@@ -26,6 +26,7 @@ public class KafkaConnector : IConnector
             : null;
         StringConsumer = new ConsumerFactory(ConfigPath).CreateStringConsumer();
         StringProducer = new ProducerFactory(ConfigPath).CreateStringProvider();
+        CheckAvailable();
     }
 
     public async Task<object?> Send(string message, CancellationToken token = default)
@@ -46,6 +47,20 @@ public class KafkaConnector : IConnector
             if (receive == null) continue;
             var value = receive.Message.Value;
             CallOnMessageEvent(value);
+        }
+    }
+
+    public void CheckAvailable()
+    {
+        var config = new ProducerFactory(ConfigPath).ProducerConfig1;
+        var adminClient = new AdminClientBuilder(new AdminClientConfig(config)).Build();
+        var metadata = adminClient.GetMetadata(InputTopic, new TimeSpan(0,0,10));
+        if (metadata==null)
+            throw new IOException($"Couldnt get metadata from {InputTopic} topic for 10 seconds");
+        foreach (var topic in metadata.Topics)
+        {
+            if (topic.Error.IsError)
+                throw new IOException($"topic {topic.Topic} is not available. Reason: {topic.Error.Reason}");
         }
     }
 

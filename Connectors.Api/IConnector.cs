@@ -9,6 +9,7 @@ public interface IConnector
     event EventHandler<string> OnReceive;
     Task<object?> Send(string message, CancellationToken token);
     Task StartReceive(CancellationToken token);
+    void CheckAvailable();
 
     
 }

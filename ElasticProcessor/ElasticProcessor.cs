@@ -8,6 +8,8 @@ public class ElasticProcessor : IProcessor<EsRequest, EsResponse>
     private readonly EsClient _esClient;
     public string ServiceName => ServiceConfig.ServiceName;
     public ServiceConfig ServiceConfig { get; }
+    public async Task CheckAvailable() => await _esClient.CheckElasticAvailable(5);
+
 
     public ElasticProcessor(ServiceConfig config)
     {

@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Headers;
 using ElasticClient;
 using ElasticClient.Extensions;
@@ -30,6 +31,19 @@ public class EsClient
                 .Accept
                 .Add(new MediaTypeWithQualityHeaderValue("application/json")); //ACCEPT header
             return httpClient;
+        }
+    }
+
+    public async Task CheckElasticAvailable(int secondsToResponse)
+    {
+        var cts = new CancellationTokenSource(new TimeSpan(secondsToResponse));
+        var responseMessage = await Client.GetAsync(new Uri($"https://{HostConfig.Host}:{HostConfig.Port}/_cat/health"), cts.Token);
+        if (responseMessage == null)
+            throw new HttpRequestException($"ElasticSearch server {HostConfig.Host}:{HostConfig.Port} is not available");
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            var response = await responseMessage.Content.ReadAsStringAsync();
+            throw new HttpRequestException($"ElasticSearch server is not healthy. Output: {response}"); //todo ask
         }
     }
 
