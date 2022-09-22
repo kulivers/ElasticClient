@@ -26,15 +26,15 @@ public class KafkaConnector : IConnector
             : null;
         StringConsumer = new ConsumerFactory(ConfigPath).CreateStringConsumer();
         StringProducer = new ProducerFactory(ConfigPath).CreateStringProvider();
-        
     }
 
-    public async Task<DeliveryResult<int, string>?> Send(string message, CancellationToken token = default)
+    public async Task<object?> Send(string message, CancellationToken token = default)
     {
         if (OutputTopic == null)
             return null;
         var kafkaMessage = new Message<int, string>() { Value = message };
-        return await StringProducer.ProduceAsync(OutputTopic, kafkaMessage, token);
+        var deliveryResult = await StringProducer.ProduceAsync(OutputTopic, kafkaMessage, token);
+        return deliveryResult;
     }
 
     public async Task StartReceive(CancellationToken token)
@@ -52,6 +52,5 @@ public class KafkaConnector : IConnector
     private protected virtual void CallOnMessageEvent(string e)
     {
         OnReceive?.Invoke(this, e);
-        
     }
 }

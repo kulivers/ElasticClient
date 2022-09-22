@@ -6,6 +6,7 @@ public class EsClient
 {
     private HostConfig HostConfig { get; }
     private IAuthenticationCredentials? AuthCredentials { get; }
+
     public EsClient(EsClientConfig esClientConfig)
     {
         HostConfig = esClientConfig.Host;
@@ -17,6 +18,7 @@ public class EsClient
         HostConfig = hostConfig;
         AuthCredentials = authCredentials;
     }
+
     private HttpClient Client
     {
         get
@@ -49,7 +51,9 @@ public class EsClient
     {
         try
         {
-            return Client.Send(esRequest.ToHttpRequestMessage(), token).ToEsResponse().Result;
+            var requestMessage = esRequest.ToHttpRequestMessage();
+            var result = Client.Send(requestMessage, token).ToEsResponseAsync().Result;
+            return result;
         }
         catch (Exception e)
         {
@@ -72,11 +76,11 @@ public class EsClient
         return await WriteRecordAsync(request, token);
     }
 
-    private async Task<EsResponse> WriteRecordAsync(EsRequest esRequest, CancellationToken token)
+    public async Task<EsResponse> WriteRecordAsync(EsRequest esRequest, CancellationToken token = default)
     {
         try
         {
-            return await (await Client.SendAsync(esRequest.ToHttpRequestMessage(), token)).ToEsResponse();
+            return await (await Client.SendAsync(esRequest.ToHttpRequestMessage(), token)).ToEsResponseAsync();
         }
         catch (Exception e)
         {

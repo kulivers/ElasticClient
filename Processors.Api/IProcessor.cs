@@ -11,5 +11,6 @@ public interface IProcessor
 public interface IProcessor<TIn, TOut> : IProcessor
 {
     public TOut Process(TIn value);
+    public Task<TOut> ProcessAsync(TIn value);
 }
 

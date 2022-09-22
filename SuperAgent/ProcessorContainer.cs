@@ -58,6 +58,7 @@ public class ProcessorContainer : IProcessorsContainer
     }
 
     public IProcessor? GetService(string serviceName) => Processors.FirstOrDefault(p => p?.ServiceName == serviceName);
+
     public TOut? Process<TIn, TOut>(string serviceName, TIn input)
     {
         var processor = (IProcessor<TIn, TOut>)GetService(serviceName);
@@ -65,13 +66,13 @@ public class ProcessorContainer : IProcessorsContainer
             throw new InvalidOperationException($"Unknown processor: {serviceName}");
         var processorType = processor.GetType();
         var (tIn, tOut) = GetInputOutputTypes(processorType);
-        
+
         var method = processorType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .First(mi => mi.ReturnType == tOut && mi.GetParameters().Any(p => p.ParameterType == tIn) &&
                          mi.Name == "Process");
-        return (TOut) method.Invoke(processor,new[] { (object)input! });
-        
+        return (TOut)method.Invoke(processor, new[] { (object)input! });
     }
+
     private static (Type tIn, Type tOut) GetInputOutputTypes(Type containerType)
     {
         var iProcessorInterface = containerType.FindInterfaces(MyInterfaceFilter, typeof(IProcessor<,>).Name).First();
@@ -96,7 +97,6 @@ public class ProcessorContainer : IProcessorsContainer
             .First(mi => mi.ReturnType == tOut && mi.GetParameters().Any(p => p.ParameterType == tIn) &&
                          mi.Name == "Process");
         return method.Invoke(processor, new[] { input });
-
     }
 
     public IEnumerator<IProcessor> GetEnumerator() => Processors.GetEnumerator();

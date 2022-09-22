@@ -19,7 +19,7 @@ public class ElasticProcessor : IProcessor<EsRequest, EsResponse>
     }
 
     public EsResponse Process(EsRequest value) => _esClient.WriteRecord(value);
-
+    public async Task<EsResponse> ProcessAsync(EsRequest value) => await _esClient.WriteRecordAsync(value);
     public TOut Process<TIn, TOut>(TIn value)
     {
         if (value is EsRequest esRequest)

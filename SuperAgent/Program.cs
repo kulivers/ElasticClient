@@ -14,9 +14,4 @@ class Program
         var agent = new SuperAgent(cfg);
         agent.Start();
     }
-
-    public static string GetMock() =>
-        "{\"HostConfig\":{\"Scheme\":\"https\",\"Host\":\"localhost\",\"Port\":9200},\"RequestParameters\":" +
-        "{\"Index\":\"test3\",\"Type\":\"_doc\",\"DocId\":null}," +
-        "\"Data\":\"{\\\"name\\\": 312}\"}";
 }
