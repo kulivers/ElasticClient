@@ -19,7 +19,8 @@ public class SuperAgent
         _connectorsConfig = connectorsConfig;
         ProcessorsContainer = new ProcessorContainer(servicesConfig);
         InitConnectors(connectorsConfig);
-        Validate();
+        ThrowIfConfigsNotValid();
+        CheckHealth();
     }
     private void InitConnectors(ConnectorsConfig connectorsConfig)
     {
@@ -42,24 +43,17 @@ public class SuperAgent
     {
         foreach (var connector in Connectors)
         {
-            MapConnector(connector);
+            connector.OnReceive += (_, data) =>
+            {
+                var response = ProcessorsContainer.Process(connector.DestinationService, data);
+                connector.StartReceive()
+            };
+            connector.StartReceive(CancellationToken.None);
         }
     }
 
-    private void MapConnector(IConnector connector)
-    {
-        connector.OnReceive += (_, data) =>
-        {
-            ProcessorsContainer.Process(connector.DestinationService, data);
-        };
-        connector.StartReceive(CancellationToken.None);
-    }
 
-    private void Validate()
-    {
-        ThrowIfConfigsNotValid();
-        CheckHealth();
-    }
+
 
     private void ThrowIfConfigsNotValid()
     {

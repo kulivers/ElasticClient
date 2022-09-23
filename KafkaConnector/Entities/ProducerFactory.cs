@@ -6,26 +6,26 @@ namespace KafkaInteractor
     
     public class ProducerFactory 
     {
-        public ProducerConfig ProducerConfig1 { get; }
+        public ProducerConfig ProducerConfig { get; }
 
         public ProducerFactory(ProducerConfig producerConfig)
         {
-            ProducerConfig1 = producerConfig;
+            ProducerConfig = producerConfig;
         }
 
         public ProducerFactory(string configPath)
         {
-            ProducerConfig1 = new KafkaConfigFactory(configPath).GetDefaultProducerConfig();
+            ProducerConfig = new KafkaConfigFactory(configPath).GetDefaultProducerConfig();
         }
         
         public ProducerFactory(ClientConfig config)
         {
-            ProducerConfig1 = new KafkaConfigFactory(config).GetDefaultProducerConfig();
+            ProducerConfig = new KafkaConfigFactory(config).GetDefaultProducerConfig();
         }
         
         public IProducer<int, string> CreateStringProvider()
         {
-            var producerBuilder = new ProducerBuilder<int, string>(ProducerConfig1);
+            var producerBuilder = new ProducerBuilder<int, string>(ProducerConfig);
             var valueSerializer = new StringSerializer();
             return producerBuilder.SetValueSerializer(valueSerializer).Build();
         }

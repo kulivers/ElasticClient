@@ -14,7 +14,7 @@ public class EsClientConfig
             .WithNamingConvention(CamelCaseNamingConvention.Instance) //todo egor mb it is not camel case
             .Build();
         var fileContent = File.ReadAllText(path);
-
+        
         return deserializer.Deserialize<EsClientConfig>(fileContent);
     }
 

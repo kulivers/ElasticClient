@@ -9,6 +9,4 @@ public interface IConnector
     event EventHandler<string> OnReceive;
     Task StartReceive(CancellationToken token);
     void CheckHealth();
-
-    
 }

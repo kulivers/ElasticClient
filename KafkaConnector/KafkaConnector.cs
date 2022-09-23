@@ -43,14 +43,10 @@ public class KafkaConnector : IConnector
 
     public void CheckHealth()
     {
-        var config = new ProducerFactory(ConfigPath).ProducerConfig1;
-        var adminClient = new AdminClientBuilder(new AdminClientConfig(config)).Build();
+        var producerConfig = new ProducerFactory(ConfigPath).ProducerConfig;
+        var adminConfig = new AdminClientConfig(producerConfig);
+        var adminClient = new AdminClientBuilder(adminConfig).Build();
         var metadata = adminClient.GetMetadata(InputTopic, new TimeSpan(0,0,10));
-        
-        if (metadata==null)
-        {
-            throw new IOException($"Couldnt get metadata from {InputTopic} topic for 10 seconds");
-        }
         
         foreach (var topic in metadata.Topics)
         {
