@@ -1,5 +1,3 @@
-using Confluent.Kafka;
-
 namespace ProcessorsRunner;
 
 public interface IConnector

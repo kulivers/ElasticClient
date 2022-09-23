@@ -32,13 +32,22 @@ public class KafkaConnector : IConnector
     public async Task StartReceive(CancellationToken token)
     {
         StringConsumer.Subscribe(InputTopic);
+        
         while (!token.IsCancellationRequested)
         {
             var receive = StringConsumer.Consume(token);
-            if (receive == null) continue;
+            if (receive == null ) continue;
             var value = receive.Message.Value;
             CallOnMessageEvent(value);
         }
+    }
+    public async Task<object?> Send(string message, CancellationToken token = default)
+    {
+        if (OutputTopic == null)
+            return null;
+        var kafkaMessage = new Message<int, string>() { Value = message };
+        var deliveryResult = await StringProducer.ProduceAsync(OutputTopic, kafkaMessage, token);
+        return deliveryResult;
     }
 
     public void CheckHealth()
@@ -59,6 +68,7 @@ public class KafkaConnector : IConnector
 
     private protected virtual void CallOnMessageEvent(string e)
     {
+        
         OnReceive?.Invoke(this, e);
     }
 }

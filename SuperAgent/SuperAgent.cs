@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Processor;
 using ProcessorsRunner;
 
@@ -5,6 +6,7 @@ public class SuperAgent
 {
     private readonly ServicesConfig _servicesConfig;
     private readonly ConnectorsConfig _connectorsConfig;
+    private readonly QueueThrottler _queueThrottler;
     public IProcessorsContainer ProcessorsContainer { get; }
     public List<IConnector> Connectors { get; set; }
 
@@ -18,10 +20,12 @@ public class SuperAgent
         _servicesConfig = servicesConfig;
         _connectorsConfig = connectorsConfig;
         ProcessorsContainer = new ProcessorContainer(servicesConfig);
+        _queueThrottler = new QueueThrottler(100);
         InitConnectors(connectorsConfig);
         ThrowIfConfigsNotValid();
         CheckHealth();
     }
+
     private void InitConnectors(ConnectorsConfig connectorsConfig)
     {
         Connectors = new List<IConnector>();
@@ -34,25 +38,53 @@ public class SuperAgent
         }
     }
 
-    public void Start()
+    public async Task Start()
     {
-        MapConnectors();
+        await MapConnectors();
     }
 
-    private void MapConnectors()
+    private async Task MapConnectors()
     {
+        // foreach (var connector in Connectors)
+        // {
+        //     connector.OnReceive += (_, data) =>
+        //     {
+        //         //above we can handle responses from specified processors to specified connectors 
+        //         var response = ProcessorsContainer.Process(connector.DestinationService, data);
+        //     };
+        //     await connector.StartReceive(CancellationToken.None);
+        // }
+
+        //todo delete above, this it example /////////////////////////////////////////////////
+
+
+        Task.Run(() => WaitTask().Start());
         foreach (var connector in Connectors)
         {
             connector.OnReceive += (_, data) =>
             {
-                var response = ProcessorsContainer.Process(connector.DestinationService, data);
-                connector.StartReceive()
+                var processFunc = () => ProcessorsContainer.Process(connector.DestinationService, data);
+                var task = new Task<object?>(processFunc);
+                _queueThrottler.Add(task);
             };
-            connector.StartReceive(CancellationToken.None);
+            connector.StartReceive(CancellationToken.None).Start();
         }
     }
 
-
+    private async Task WaitTask()
+    {
+        var i = 0;
+        while (true)
+        {
+            await _queueThrottler.WaitFirstTaskCompleted()
+                .ContinueWith(o =>
+                {
+                    i++;
+                    if (i / 1000 == 1)
+                        Console.WriteLine(i);
+                });
+        }
+    }
 
 
     private void ThrowIfConfigsNotValid()
@@ -91,11 +123,10 @@ public class SuperAgent
         {
             processor.CheckHealth();
         }
+
         foreach (var connector in Connectors)
         {
             connector.CheckHealth();
         }
     }
-
-    
 }

@@ -43,6 +43,7 @@ namespace KafkaInteractor
             var consumerConfig = new ConsumerConfig(ClientConfig);
             consumerConfig.GroupId ??= "foo";
             consumerConfig.AutoOffsetReset ??= AutoOffsetReset.Latest;
+            
             return consumerConfig;
         }
     }
