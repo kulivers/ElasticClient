@@ -6,24 +6,24 @@ namespace ElasticClient;
 public class ElasticProcessor : IProcessor<EsRequest, EsResponse>
 {
     private readonly EsClient _esClient;
-    public string ServiceName => ServiceConfig.ServiceName;
-    public ServiceConfig ServiceConfig { get; }
+    public string ServiceName => ProcessorConfig.Name;
+    public ProcessorConfig ProcessorConfig { get; }
 
-    public ElasticProcessor(ServiceConfig config)
+    public ElasticProcessor(ProcessorConfig config)
     {
         if (config.ConfigType != ConfigType.Yaml)
         {
             throw new NotImplementedException();
         }
 
-        ServiceConfig = config;
+        ProcessorConfig = config;
         var clientConfig = EsClientConfig.FromYaml(config.Config);
         _esClient = new EsClient(clientConfig);
     }
 
     public async Task CheckHealth()
     {
-        await _esClient.CheckElasticAvailable(5);
+        await _esClient.CheckElasticAvailable();
     }
 
     public EsResponse Process(EsRequest value)
@@ -48,5 +48,5 @@ public class ElasticProcessor : IProcessor<EsRequest, EsResponse>
         throw new InvalidCastException();
     }
 
-    public override int GetHashCode() => ServiceName.GetHashCode() ^ ServiceConfig.GetHashCode();
+    public override int GetHashCode() => ServiceName.GetHashCode() ^ ProcessorConfig.GetHashCode();
 }

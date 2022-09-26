@@ -1,0 +1,34 @@
+using InputServices;
+using IOServices.Api;
+using OuputServices;
+
+namespace ProcessorsRunner;
+
+public class ConnectorFactory
+{
+    public IConnector CreateConnector(ConnectorConfig config)
+    {
+        var destination = config.Destination;
+        IInputService inputService = null;
+        IOutputService outputService = null;
+
+        if (config.Input == InputService.Kafka)
+        {
+            var inputConfig = new KafkaInputConfig(config.InputConfig);
+            inputService = new KafkaInputService(inputConfig);
+        }
+
+        if (config.Output == OutputService.Kafka)
+        {
+            var outputConfig = new KafkaOutputConfig(config.OutputConfig);
+            outputService = new KafkaOutputService(outputConfig);
+        }
+
+        if (inputService == null)
+        {
+            throw new InvalidOperationException("inputService cant be null");
+        }
+        
+        return new Connector(destination, inputService , outputService);
+    }
+}

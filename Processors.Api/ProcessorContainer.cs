@@ -9,10 +9,10 @@ public class ProcessorContainer : IProcessorsContainer
 {
     public List<IProcessor?> Processors { get; }
 
-    public ProcessorContainer(ServicesConfig servicesConfig)
+    public ProcessorContainer(ProcessorsConfig processorsConfig)
     {
         Processors = new List<IProcessor?>();
-        foreach (var config in servicesConfig.Services)
+        foreach (var config in processorsConfig.Processors)
         {
             var assembly = Assembly.LoadFrom(config.Dll);
             var assTypes = assembly.GetTypes();

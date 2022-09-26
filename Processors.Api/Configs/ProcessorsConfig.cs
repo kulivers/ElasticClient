@@ -3,21 +3,21 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace Processor;
 
-public class ServicesConfig
+public class ProcessorsConfig
 {
-    public IEnumerable<ServiceConfig> Services { get; set; }
+    public IEnumerable<ProcessorConfig> Processors { get; set; }
 
-    public ServicesConfig()
+    public ProcessorsConfig()
     {
         
     }
 
-    public ServicesConfig(IEnumerable<ServiceConfig> services)
+    public ProcessorsConfig(IEnumerable<ProcessorConfig> processors)
     {
-        Services = services;
+        Processors = processors;
     }
 
-    public static ServicesConfig FromYaml(string path)
+    public static ProcessorsConfig FromYaml(string path)
     {
         if (!path.EndsWith(".yaml"))
         {
@@ -27,15 +27,15 @@ public class ServicesConfig
             .WithNamingConvention(CamelCaseNamingConvention.Instance) //todo egor mb it is not camel case
             .Build();
         var fileContent = File.ReadAllText(path);
-        return deserializer.Deserialize<ServicesConfig>(fileContent);
+        return deserializer.Deserialize<ProcessorsConfig>(fileContent);
     }
 }
 
-public class ServiceConfig
+public class ProcessorConfig
 {
     public string Dll { get; set; }
     public string Config { get; set; }
-    public string ServiceName { get; set; }
+    public string Name { get; set; }
 
     public ConfigType ConfigType
     {
@@ -51,14 +51,14 @@ public class ServiceConfig
 
     public override bool Equals(object? otherObj)
     {
-        if (otherObj is not ServiceConfig other)
+        if (otherObj is not ProcessorConfig other)
             return false;
-        return Dll == other.Dll && Config == other.Config && ServiceName == other.ServiceName;
+        return Dll == other.Dll && Config == other.Config && Name == other.Name;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Dll, Config, ServiceName);
+        return HashCode.Combine(Dll, Config, Name);
     }
 }
 

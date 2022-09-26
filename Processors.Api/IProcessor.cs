@@ -3,7 +3,7 @@
 public interface IProcessor  
 {
     string ServiceName { get; }
-    ServiceConfig ServiceConfig { get; }
+    ProcessorConfig ProcessorConfig { get; }
     Task CheckHealth();
 
 }

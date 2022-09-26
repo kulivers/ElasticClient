@@ -3,20 +3,20 @@ using ProcessorsRunner;
 
 public class SuperAgent
 {
-    private readonly ServicesConfig _servicesConfig;
+    private readonly ProcessorsConfig _processorsConfig;
     private readonly ConnectorsConfig _connectorsConfig;
     public IProcessorsContainer ProcessorsContainer { get; }
     public List<IConnector> Connectors { get; set; }
 
-    public SuperAgent(AgentConfig agentConfig) : this(new ServicesConfig(agentConfig.Services), new ConnectorsConfig(agentConfig.Connectors))
+    public SuperAgent(AgentConfig agentConfig) : this(new ProcessorsConfig(agentConfig.Processors), new ConnectorsConfig(agentConfig.Connectors))
     {
     }
 
-    public SuperAgent(ServicesConfig servicesConfig, ConnectorsConfig connectorsConfig)
+    public SuperAgent(ProcessorsConfig processorsConfig, ConnectorsConfig connectorsConfig)
     {
-        _servicesConfig = servicesConfig;
+        _processorsConfig = processorsConfig;
         _connectorsConfig = connectorsConfig;
-        ProcessorsContainer = new ProcessorContainer(servicesConfig);
+        ProcessorsContainer = new ProcessorContainer(processorsConfig);
         InitConnectors(connectorsConfig);
         ThrowIfConfigsNotValid();
         CheckHealth();
@@ -25,11 +25,12 @@ public class SuperAgent
     private void InitConnectors(ConnectorsConfig connectorsConfig)
     {
         Connectors = new List<IConnector>();
+        var factory = new ConnectorFactory();
         foreach (var connectorConfig in connectorsConfig.Connectors)
         {
-            if (connectorConfig.IoServiceType == IoType.Kafka)
+            if (connectorConfig.Input == InputService.Kafka)
             {
-                Connectors.Add(new KafkaConnector(connectorConfig));
+                Connectors.Add(factory.CreateConnector(connectorConfig));
             }
         }
     }
@@ -45,7 +46,7 @@ public class SuperAgent
         {
             connector.OnReceive += (_, data) =>
             {
-                var response = ProcessorsContainer.Process(connector.DestinationService, data);
+                var response = ProcessorsContainer.Process(connector.DestinationProcessor, (string)data); 
             };
             await connector.StartReceive(CancellationToken.None);
         }
@@ -59,7 +60,7 @@ public class SuperAgent
 
         void ValidateServicesConfig()
         {
-            foreach (var config in _servicesConfig.Services)
+            foreach (var config in _processorsConfig.Processors)
             {
                 File.Open(config.Dll, FileMode.Open, FileAccess.Read).Dispose();
                 File.Open(config.Config, FileMode.Open, FileAccess.Read).Dispose();
@@ -68,15 +69,19 @@ public class SuperAgent
 
         void ValidateConnectorsConfig()
         {
-            foreach (var config in _connectorsConfig.Connectors)
+            foreach (var connectorConfig in _connectorsConfig.Connectors)
             {
-                if (!_servicesConfig.Services.Any(cfg => cfg.ServiceName == config.Destination))
+                if (!_processorsConfig.Processors.Any(cfg => cfg.Name == connectorConfig.Destination))
                     throw new ApplicationException(
-                        $"There is no service {config.Destination} for {config.IoServiceType} connector");
-                if (config.IoServiceType == IoType.Kafka)
+                        $"There is no service {connectorConfig.Destination} for some connector");
+                
+                var inputConfig = connectorConfig.InputConfig;
+                File.Open(inputConfig, FileMode.Open, FileAccess.Read).Dispose();
+
+                var outputConfig = connectorConfig?.OutputConfig;
+                if (outputConfig != null)
                 {
-                    var path = config.Properties["config"];
-                    File.Open(path, FileMode.Open, FileAccess.Read).Dispose();
+                    File.Open(outputConfig, FileMode.Open, FileAccess.Read).Dispose();
                 }
             }
         }

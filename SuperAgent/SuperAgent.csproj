@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\KafkaConnector\KafkaConnector.csproj" />
+      <ProjectReference Include="..\Connector\Connector.csproj" />
       <ProjectReference Include="..\Processors.Api\Processors.Api.csproj" />
     </ItemGroup>
 

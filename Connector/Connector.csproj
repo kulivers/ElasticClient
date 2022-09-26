@@ -4,13 +4,18 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>Processor.Api</RootNamespace>
+        <RootNamespace>KafkaConnector</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Confluent.Kafka" Version="1.9.4-RC1" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="YamlDotNet" Version="12.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InputServices\InputServices.csproj" />
+      <ProjectReference Include="..\OuputServices\OuputServices.csproj" />
+      <ProjectReference Include="..\Processors.Api\Processors.Api.csproj" />
     </ItemGroup>
 
 </Project>

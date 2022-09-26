@@ -6,7 +6,7 @@ namespace ProcessorsRunner;
 
 public class AgentConfig
 {
-    public IEnumerable<ServiceConfig> Services { get; set; } 
+    public IEnumerable<ProcessorConfig> Processors { get; set; } 
     public IEnumerable<ConnectorConfig> Connectors { get; set; }
     
     public static AgentConfig FromYaml(string path)

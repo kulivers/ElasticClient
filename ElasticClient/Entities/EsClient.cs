@@ -30,10 +30,11 @@ public class EsClient
         }
     }
 
-    public async Task CheckElasticAvailable(int secondsToResponse)
+    public async Task CheckElasticAvailable()
     {
-        var cts = new CancellationTokenSource(new TimeSpan(secondsToResponse));
         var requestIri = new Uri($"https://{HostConfig.Host}:{HostConfig.Port}/_cat/health");
+        var delay = new TimeSpan(0, 0, 20);
+        var cts = new CancellationTokenSource(delay);
         var responseMessage = await Client.GetAsync(requestIri, cts.Token);
 
         if (responseMessage == null)

@@ -11,12 +11,20 @@ public class ConnectorsConfig
 public class ConnectorConfig
 {
     public string Destination { get; set; }
-    public IoType IoServiceType { get; set; }
-    public Dictionary<string, string>? Properties { get; set; }
+    public InputService Input { get; set; }
+    public OutputService? Output { get; set; }
+    public string InputConfig { get; set; }
+    public string? OutputConfig { get; set; }
 }
 
 
-public enum IoType
+public enum InputService
 {
     Kafka
+}
+
+public enum OutputService
+{
+    Kafka,
+    None
 }

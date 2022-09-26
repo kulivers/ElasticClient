@@ -1,11 +1,7 @@
-﻿using Autofac.Core.Registration;
-using Processor;
-using ProcessorsRunner;
-using YamlDotNet.Serialization.NodeTypeResolvers;
+﻿using ProcessorsRunner;
 
 class Program
 {
-
     public static async Task Main(string[] args)
     {
         var agentYaml = "D:\\Work\\myProcessorAgent\\SuperAgent\\config\\agent.yaml";

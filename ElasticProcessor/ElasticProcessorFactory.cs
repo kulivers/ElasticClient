@@ -13,9 +13,9 @@ public class ElasticProcessorFactory : IProcessorFactory<EsRequest, EsResponse>
         Processors = new HashSet<IProcessor>();
     }
 
-    public IProcessor GetOrCreateProcessor(ServiceConfig config)
+    public IProcessor GetOrCreateProcessor(ProcessorConfig config)
     {
-        var saved = Processors.FirstOrDefault(p => Equals(p.ServiceConfig, config));
+        var saved = Processors.FirstOrDefault(p => Equals(p.ProcessorConfig, config));
         if (saved!=null)
             return saved;
         var elasticProcessor = new ElasticProcessor(config);

@@ -1,21 +1,20 @@
-services:
+processors:
   -
     dll: D:\Work\myProcessorAgent\ElasticProcessor\bin\Debug\net6.0\ElasticProcessor.dll
-    config: D:/Work/myProcessorAgent/SuperAgent/config/elastic.yaml
-    serviceName: Elasticsearch writer1
+    config: D:\Work\myProcessorAgent\SuperAgent\config\processor-elastic.yaml
+    name: Elasticsearch writer1
   -
     dll: D:\Work\myProcessorAgent\ElasticProcessor\bin\Debug\net6.0\ElasticProcessor.dll
-    config: D:/Work/myProcessorAgent/SuperAgent/config/elastic.yaml
-    serviceName: Elasticsearch writer2
+    config: D:\Work\myProcessorAgent\SuperAgent\config\processor-elastic.yaml
+    name: Elasticsearch writer2
   -
     dll: D:\Work\myProcessorAgent\ElasticProcessor\bin\Debug\net6.0\ElasticProcessor.dll
-    config: D:/Work/myProcessorAgent/SuperAgent/config/elastic.yaml
-    serviceName: Elasticsearch writer3
+    config: D:\Work\myProcessorAgent\SuperAgent\config\processor-elastic.yaml
+    name: Elasticsearch writer3
 connectors:
   -
     destination: Elasticsearch writer1
-    ioServiceType: kafka
-    properties:
-      config: D:\Work\myProcessorAgent\SuperAgent\config\kafka.yaml
-      inputTopic: requestTopic
-      outputTopic: 
+    input: kafka
+    inputConfig: D:\Work\myProcessorAgent\SuperAgent\config\input-kafka.yaml
+    output: 
+    outputConfig: 

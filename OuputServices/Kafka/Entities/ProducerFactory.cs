@@ -1,5 +1,5 @@
 ﻿using Confluent.Kafka;
-using KafkaInteractor;
+using OuputServices.Kafka.Entities;
 
 namespace KafkaInteractor
 {
@@ -15,12 +15,12 @@ namespace KafkaInteractor
 
         public ProducerFactory(string configPath)
         {
-            ProducerConfig = new KafkaConfigFactory(configPath).GetDefaultProducerConfig();
+            ProducerConfig = new ProducerConfigFactory(configPath).GetDefaultProducerConfig();
         }
         
         public ProducerFactory(ClientConfig config)
         {
-            ProducerConfig = new KafkaConfigFactory(config).GetDefaultProducerConfig();
+            ProducerConfig = new ProducerConfigFactory(config).GetDefaultProducerConfig();
         }
         
         public IProducer<int, string> CreateStringProvider()
