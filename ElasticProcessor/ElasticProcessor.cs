@@ -10,6 +10,7 @@ public class ElasticProcessor : IProcessor<EsRequest, EsResponse>
     private readonly string NotSupportedConfigType = ProcessorsResources.NotSupportedConfigType;
     public string ServiceName => ProcessorConfig.Name;
     public ProcessorConfig ProcessorConfig { get; }
+    private double SecondsToResponse => 5;
 
     public ElasticProcessor(ProcessorConfig config)
     {
@@ -27,7 +28,7 @@ public class ElasticProcessor : IProcessor<EsRequest, EsResponse>
 
     public async Task CheckHealth()
     {
-        await _esClient.CheckElasticAvailable();
+        await _esClient.CheckElasticAvailable(SecondsToResponse);
     }
 
     public EsResponse Process(EsRequest value)

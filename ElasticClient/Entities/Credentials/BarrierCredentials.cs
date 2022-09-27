@@ -2,8 +2,8 @@ namespace ElasticClient.Entities;
 
 public class BarrierCredentials : AuthenticationCredentials
 {
-    public string Type => "Barrier";
-    public string Token { get; set; }
+    public override string Type => "Barrier";
+    public override string Token { get; set; }
 
     public BarrierCredentials(string token)
     {

@@ -31,6 +31,10 @@
         <Generator>PublicResXFileCodeGenerator</Generator>
         <LastGenOutput>UtilResources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="Processors\ProcessorsResources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>ProcessorsResources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -58,6 +62,11 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>UtilResources.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Processors\ProcessorsResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ProcessorsResources.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 

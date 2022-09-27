@@ -35,23 +35,31 @@ public class EsClient
         }
     }
 
-    public async Task CheckElasticAvailable()
+    public async Task CheckElasticAvailable(double secondsToResponse)
     {
         var requestIri = new Uri($"https://{HostConfig.Host}:{HostConfig.Port}/_cat/health");
-        var delay = new TimeSpan(0, 0, 20);
+        var delay = TimeSpan.FromSeconds(secondsToResponse);
         var cts = new CancellationTokenSource(delay);
-        var responseMessage = await Client.GetAsync(requestIri, cts.Token);
-
-        if (responseMessage == null)
+        try
         {
-            throw new HttpRequestException(string.Format(ElasticSearchNotAvailable, HostConfig.Host, HostConfig.Port, delay.Seconds));
+            var responseMessage = await Client.GetAsync(requestIri, cts.Token);
+
+            if (responseMessage == null)
+            {
+                throw new HttpRequestException(string.Format(ElasticSearchNotAvailable, HostConfig.Host, HostConfig.Port, delay.Seconds));
+            }
+
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                var responseContent = await responseMessage.Content.ReadAsStringAsync(CancellationToken.None);
+                var exInfo = string.Format(ElasticSearchNotHealthy, responseContent);
+                throw new HttpRequestException(exInfo);
+            }
         }
-
-        if (!responseMessage.IsSuccessStatusCode)
+        catch (TaskCanceledException e)
         {
-            var responseContent = await responseMessage.Content.ReadAsStringAsync(CancellationToken.None);
-            var exInfo = string.Format(ElasticSearchNotHealthy, responseContent);
-            throw new HttpRequestException(exInfo);
+            var exInfo = string.Format(TooBigDelayFromElastic, HostConfig.Host);
+            throw new TaskCanceledException(exInfo);
         }
     }
 

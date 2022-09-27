@@ -4,8 +4,8 @@ namespace ElasticClient.Entities;
 
 public class ApiKeyCredentials : AuthenticationCredentials
 {
-    public string Type => "ApiKey";
-    public string Token { get; set; }
+    public override string Type => "ApiKey";
+    public override string Token { get; set; }
 
     public ApiKeyCredentials(string token)
     {

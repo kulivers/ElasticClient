@@ -4,8 +4,8 @@ namespace ElasticClient.Entities;
 
 public class BasicCredentials : AuthenticationCredentials
 {
-    public string Type => "Basic";
-    public string Token { get; set; }
+    public override string Type => "Basic";
+    public override string Token { get; set; }
 
     public BasicCredentials(string token)
     {

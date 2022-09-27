@@ -21,7 +21,4 @@
     <data name="NotSupportedConfigType" xml:space="preserve">
         <value>Not supported type of config file. Now supported types: {0}</value>
     </data>
-    <data name="NotSupportedConfigType" xml:space="preserve">
-        <value>Not supported type of config file. Now supported types: {0}</value>
-    </data>
 </root>
