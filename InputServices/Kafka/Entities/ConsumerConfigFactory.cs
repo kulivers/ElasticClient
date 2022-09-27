@@ -1,11 +1,12 @@
 ﻿using Confluent.Kafka;
+using Localization;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 namespace KafkaInteractor
 {
     public class ConsumerConfigFactory
     {
-        private const string WrongTypeOfFileNeedToBeYaml = "wrong type of file. need to be .yaml";
+        private static readonly string WrongTypeOfFileNeedToBeYaml = InputServicesRecources.WrongTypeOfFileNeedToBeYaml;
         private const string DefaultGroupId = "foo";
         private ClientConfig ClientConfig { get; }
 

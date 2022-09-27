@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\InputServices.Api\InputServices.Api.csproj" />
+      <ProjectReference Include="..\Localization\Localization.csproj" />
     </ItemGroup>
 
 </Project>

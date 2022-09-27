@@ -1,12 +1,14 @@
 ﻿using Confluent.Kafka;
 using IOServices.Api;
 using KafkaInteractor;
+using Localization;
 
 namespace InputServices;
 
 public class KafkaInputService : IInputService
 {
-    private static readonly string TopicNotAvailableText = $"topic {0} is not available. Reason: {1}"; 
+    private static readonly string TopicNotAvailable = InputServicesRecources.TopicNotAvailable; 
+    // private static readonly string TopicNotAvailableText = $"topic {0} is not available. Reason: {1}"; 
 
     private readonly IEnumerable<string> _inputTopics;
     private readonly ConsumerConfig _consumerConfig;
@@ -55,7 +57,7 @@ public class KafkaInputService : IInputService
                 {
                     if (topicMetadata.Error.IsError)
                     {
-                        throw new IOException(string.Format(TopicNotAvailableText, topicMetadata.Topic, topicMetadata.Error.Reason));
+                        throw new IOException(string.Format(TopicNotAvailable, topicMetadata.Topic, topicMetadata.Error.Reason));
                     }
                 }
             }

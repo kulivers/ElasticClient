@@ -11,6 +11,10 @@
         <Generator>PublicResXFileCodeGenerator</Generator>
         <LastGenOutput>ConnectorResources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="InputServicesRecources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>InputServicesRecources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -18,6 +22,11 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>ConnectorResources.resx</DependentUpon>
+      </Compile>
+      <Compile Update="InputServicesRecources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>InputServicesRecources.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 
