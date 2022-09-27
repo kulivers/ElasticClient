@@ -2,7 +2,7 @@
 
 namespace ElasticClient.Entities;
 
-public class BasicCredentials : IAuthenticationCredentials
+public class BasicCredentials : AuthenticationCredentials
 {
     public string Type => "Basic";
     public string Token { get; set; }
@@ -13,9 +13,7 @@ public class BasicCredentials : IAuthenticationCredentials
     }
     public BasicCredentials(string userName, string password)
     {
-        Token = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{userName}:{password}"));
+        var bytes = Encoding.UTF8.GetBytes($"{userName}:{password}");
+        Token = Convert.ToBase64String(bytes);
     }
-
-    public string ToHeaderValue() => $"{Type} {Token}";
-
 }

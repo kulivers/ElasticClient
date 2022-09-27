@@ -1,5 +1,5 @@
 using Confluent.Kafka;
-using Localization;
+using Utils;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -7,7 +7,6 @@ namespace InputServices;
 
 public class KafkaOutputConfig
 {
-    private static readonly string WrongTypeOfFileNeedToBeYaml = IOServicesRecources.WrongTypeOfFileNeedToBeYaml;
     public IEnumerable<string> Topics { get; set; }
     public ClientConfig Client { get; set; }
 
@@ -23,16 +22,7 @@ public class KafkaOutputConfig
     }
     public static KafkaOutputConfig FromYaml(string path)
     {
-        if (!path.EndsWith(".yaml"))
-        {
-            throw new ArgumentException(WrongTypeOfFileNeedToBeYaml);
-        }
-
-        var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance) 
-            .Build();
-        var fileContent = File.ReadAllText(path);
-        return deserializer.Deserialize<KafkaOutputConfig>(fileContent);
+        return YamlConfigHelper.GetConfigFromCamelYaml<KafkaOutputConfig>(path);
     }
     
 }

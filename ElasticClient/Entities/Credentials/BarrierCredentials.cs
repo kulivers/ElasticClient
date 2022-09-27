@@ -1,6 +1,6 @@
 namespace ElasticClient.Entities;
 
-public class BarrierCredentials : IAuthenticationCredentials
+public class BarrierCredentials : AuthenticationCredentials
 {
     public string Type => "Barrier";
     public string Token { get; set; }
@@ -9,7 +9,4 @@ public class BarrierCredentials : IAuthenticationCredentials
     {
         Token = token;
     }
-
-    public string ToHeaderValue() => $"{Type} {Token}";
-
 }

@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Localization.Processors {
+namespace Localization.Libs {
     using System;
     
     
@@ -21,14 +21,14 @@ namespace Localization.Processors {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ProcessorsResources {
+    public class UtilResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ProcessorsResources() {
+        internal UtilResources() {
         }
         
         /// <summary>
@@ -38,7 +38,7 @@ namespace Localization.Processors {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Localization.Processors.ProcessorsResources", typeof(ProcessorsResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Localization.Libs.UtilResources", typeof(UtilResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -60,11 +60,11 @@ namespace Localization.Processors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not supported type of config file. Now supported types: {0}.
+        ///   Looks up a localized string similar to wrong type of file. need to be .yaml.
         /// </summary>
-        public static string NotSupportedConfigType {
+        public static string WrongTypeOfFileNeedToBeYaml {
             get {
-                return ResourceManager.GetString("NotSupportedConfigType", resourceCulture);
+                return ResourceManager.GetString("WrongTypeOfFileNeedToBeYaml", resourceCulture);
             }
         }
     }

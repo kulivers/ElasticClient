@@ -27,6 +27,10 @@
         <Generator>PublicResXFileCodeGenerator</Generator>
         <LastGenOutput>SuperAgentResources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="Libs\UtilResources.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>UtilResources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -45,15 +49,15 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>ElasticClientResources.resx</DependentUpon>
       </Compile>
-      <Compile Update="Processors\ProcessorsResources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>ProcessorsResources.resx</DependentUpon>
-      </Compile>
       <Compile Update="SuperAgent\SuperAgentResources.Designer.cs">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>SuperAgentResources.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Libs\UtilResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>UtilResources.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 

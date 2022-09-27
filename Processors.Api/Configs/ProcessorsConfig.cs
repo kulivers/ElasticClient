@@ -17,19 +17,6 @@ public class ProcessorsConfig
     {
         Processors = processors;
     }
-
-    public static ProcessorsConfig FromYaml(string path)
-    {
-        if (!path.EndsWith(".yaml"))
-        {
-            throw new NotSupportedException(NotSupportedConfigType);
-        }
-        var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance) 
-            .Build();
-        var fileContent = File.ReadAllText(path);
-        return deserializer.Deserialize<ProcessorsConfig>(fileContent);
-    }
 }
 
 public class ProcessorConfig

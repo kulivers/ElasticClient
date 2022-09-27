@@ -11,7 +11,7 @@ public class EsClient
     private const string AuthorizationHeaderKey = "Authorization";
     private const string ContentTypeHeaderValue = "application/json";
     private HostConfig HostConfig { get; }
-    private IAuthenticationCredentials? AuthCredentials { get; }
+    private AuthenticationCredentials? AuthCredentials { get; }
 
     public EsClient(EsClientConfig esClientConfig)
     {

@@ -1,27 +1,16 @@
 ﻿using Confluent.Kafka;
-using Localization;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
+using Utils;
+
 namespace KafkaInteractor
 {
     public class ConsumerConfigFactory
     {
-        private static readonly string WrongTypeOfFileNeedToBeYaml = IOServicesRecources.WrongTypeOfFileNeedToBeYaml;
         private const string DefaultGroupId = "foo";
         private ClientConfig ClientConfig { get; }
 
         private static ClientConfig FromYaml(string path)
         {
-            if (!path.EndsWith(".yaml"))
-            {
-                throw new ArgumentException(WrongTypeOfFileNeedToBeYaml);
-            }
-
-            var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance) 
-                .Build();
-            var fileContent = File.ReadAllText(path);
-            return deserializer.Deserialize<ClientConfig>(fileContent);
+            return YamlConfigHelper.GetConfigFromCamelYaml<ClientConfig>(path);
         }
 
         public ConsumerConfigFactory(ClientConfig clientConfig)

@@ -85,14 +85,5 @@ namespace Localization {
                 return ResourceManager.GetString("TopicNotAvailable", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Wrong type of file. need to be .yaml.
-        /// </summary>
-        public static string WrongTypeOfFileNeedToBeYaml {
-            get {
-                return ResourceManager.GetString("WrongTypeOfFileNeedToBeYaml", resourceCulture);
-            }
-        }
     }
 }
