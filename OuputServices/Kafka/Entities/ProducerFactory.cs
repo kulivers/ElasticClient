@@ -23,7 +23,7 @@ namespace KafkaInteractor
             ProducerConfig = new ProducerConfigFactory(config).GetDefaultProducerConfig();
         }
         
-        public IProducer<int, string> CreateStringProvider()
+        public IProducer<int, string> CreateStringProducer()
         {
             var producerBuilder = new ProducerBuilder<int, string>(ProducerConfig);
             var valueSerializer = new StringSerializer();

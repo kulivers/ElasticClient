@@ -26,7 +26,7 @@ public class KafkaOutputService : IOutputService, IDisposable
     public KafkaOutputService(ProducerConfig producerConfig, IEnumerable<string> outputTopics)
     {
         _producerConfig = producerConfig;
-        StringProducer = new ProducerFactory(_producerConfig).CreateStringProvider();
+        StringProducer = new ProducerFactory(_producerConfig).CreateStringProducer();
         OutputTopics = outputTopics;
     }
 
