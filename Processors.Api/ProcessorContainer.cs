@@ -91,21 +91,23 @@ public class ProcessorContainer : IProcessorsContainer
         var method = processorType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .First(mi => mi.ReturnType == tOut && mi.GetParameters().Any(p => p.ParameterType == tIn) &&
                          mi.Name == "Process");
-        return (TOut)method.Invoke(processor, new[] { (object)input! });
+        return (TOut)method.Invoke(processor, new[] { (object)input! })!;
     }
 
     private static (Type tIn, Type tOut) GetInputOutputTypes(Type containerType)
     {
-        var iProcessorInterface = containerType.FindInterfaces(MyInterfaceFilter, typeof(IProcessor<,>).Name).First();
+        var iProcessorInterface = containerType.FindInterfaces(InterfaceFilter, typeof(IProcessor<,>).Name).First();
         var genericArguments = iProcessorInterface.GetGenericArguments();
         var tIn = genericArguments.First();
         var tOut = genericArguments.Last();
         return (tIn, tOut);
     }
 
-    private static bool MyInterfaceFilter(Type typeObj, object? criteriaObj)
+    private static bool InterfaceFilter(Type typeObj, object? criteriaObj)
     {
-        return typeObj.ToString().Contains(criteriaObj?.ToString() ?? string.Empty);
+        var typeName = typeObj.ToString();
+        var criteriaOrEmpty = criteriaObj?.ToString() ?? string.Empty;
+        return typeName.Contains(criteriaOrEmpty);
     }
 
     public object? Process(string processorName, string message)

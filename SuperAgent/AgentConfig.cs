@@ -18,7 +18,7 @@ public class AgentConfig
             throw new ArgumentException(WrongTypeOfFileNeedToBeYaml);
         }
         var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance) //todo egor mb it is not camel case
+            .WithNamingConvention(CamelCaseNamingConvention.Instance) 
             .Build();
         
         var fileContent = File.ReadAllText(path);

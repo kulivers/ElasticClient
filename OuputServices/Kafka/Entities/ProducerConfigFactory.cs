@@ -20,7 +20,7 @@ namespace OuputServices.Kafka.Entities
             }
 
             var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance) //todo egor mb it is not camel case
+                .WithNamingConvention(CamelCaseNamingConvention.Instance) 
                 .Build();
             var fileContent = File.ReadAllText(path);
             return deserializer.Deserialize<ClientConfig>(fileContent);
@@ -44,7 +44,6 @@ namespace OuputServices.Kafka.Entities
 
             ClientConfig.Acks ??= Acks.All;
             ClientConfig.ClientId ??= Dns.GetHostName();
-
             var producerConfig = new ProducerConfig(ClientConfig)
             {
                 Partitioner = Partitioner.Consistent,

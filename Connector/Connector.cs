@@ -17,16 +17,23 @@ public class Connector : IConnector
         InputService.OnReceive += CallOnReceiveMethod;
     }
 
-    private void CallOnReceiveMethod(object? sender, object e)
+    private async Task SendToOutputService(object e)
+    {
+        var cts = new CancellationTokenSource(new TimeSpan(10, 10, 5));//todo after all
+        if (OutputService != null)
+        {
+            var result = await OutputService.Send(e, cts.Token); // todo if canceled - catch that
+        }
+    }
+    private async void CallOnReceiveMethod(object? sender, object e)
     {
         OnReceive?.Invoke(sender, e);
-        var cts = new CancellationTokenSource(new TimeSpan(0, 0, 5));
-        OutputService?.Send(e, cts.Token).Start();
+        await SendToOutputService(e);
     }
 
     public async Task StartReceive(CancellationToken token)
     {
-        InputService.StartReceive(token).Start(); //todo check that one
+        InputService.StartReceive(token).Start(); 
     }
 
     public void CheckHealth()

@@ -78,6 +78,15 @@ namespace Localization.Libs {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Request to elasticSearch server ({0}) canceled because of too big delay.
+        /// </summary>
+        public static string TooBigDelayFromElastic {
+            get {
+                return ResourceManager.GetString("TooBigDelayFromElastic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown authentication type.
         /// </summary>
         public static string UnknownAuthenticationType {

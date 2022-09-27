@@ -6,51 +6,18 @@ using Localization;
 
 namespace OuputServices;
 
-public class KafkaOutputService : IOutputService
+public class KafkaOutputService : IOutputService, IDisposable
 {
     private static readonly string TopicNotAvailableText = IOServicesRecources.TopicNotAvailable;
     private static readonly string CantSendMessage = IOServicesRecources.CantSendMessageOfType;
 
     private readonly ProducerConfig _producerConfig;
+
     private IProducer<int, string> StringProducer { get; }
+
     private IEnumerable<string> OutputTopics { get; }
 
-    public IOutputService Create(string path)
-    {
-        var config = KafkaOutputConfig.FromYaml(path);
-        return new KafkaOutputService(config);
-    }
-
     public event EventHandler<object>? OnSend;
-
-    public async Task Send(string o, CancellationToken token)
-    {
-        var message = new Message<int, string>() { Value = o };
-        using (StringProducer)
-        {
-            foreach (var topic in OutputTopics)
-            {
-                var deliveryResult = await StringProducer.ProduceAsync(topic, message, token);
-                CallOnSendEvent(deliveryResult);
-            }
-        }
-    }
-
-    public async Task Send(object o, CancellationToken token)
-    {
-        if (o is string message)
-        {
-            await Send(message, token);
-            return;
-        }
-
-        throw new NotImplementedException(string.Format(CantSendMessage, o.GetType()));
-    }
-
-    private void CallOnSendEvent(object deliveryResult)
-    {
-        OnSend?.Invoke(this, deliveryResult);
-    }
 
     public KafkaOutputService(KafkaOutputConfig kafkaOutputConfig) : this(new ProducerConfig(kafkaOutputConfig.Client), kafkaOutputConfig.Topics)
     {
@@ -61,6 +28,34 @@ public class KafkaOutputService : IOutputService
         _producerConfig = producerConfig;
         StringProducer = new ProducerFactory(_producerConfig).CreateStringProvider();
         OutputTopics = outputTopics;
+    }
+
+    private async Task<object> SendString(string o, CancellationToken token)
+    {
+        var message = new Message<int, string>() { Value = o };
+        var deliveryResults = new List<DeliveryResult<int, string>>();
+        foreach (var topic in OutputTopics)
+        {
+            var deliveryResult = await StringProducer.ProduceAsync(topic, message, token);
+            deliveryResults.Add(deliveryResult);
+            CallOnSendEvent(deliveryResult);
+        }
+        return deliveryResults;
+    }
+
+    public async Task<object> Send(object o, CancellationToken token)
+    {
+        if (o is string message)
+        {
+            return await SendString(message, token);
+        }
+
+        throw new NotImplementedException(string.Format(CantSendMessage, o.GetType()));
+    }
+
+    private void CallOnSendEvent(object deliveryResult)
+    {
+        OnSend?.Invoke(this, deliveryResult);
     }
 
 
@@ -82,5 +77,10 @@ public class KafkaOutputService : IOutputService
                 }
             }
         }
+    }
+
+    public void Dispose()
+    {
+        StringProducer.Dispose();
     }
 }

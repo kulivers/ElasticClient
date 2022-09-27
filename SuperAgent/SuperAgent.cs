@@ -36,25 +36,25 @@ public class SuperAgent
                 Connectors.Add(factory.CreateConnector(connectorConfig));
             }
         }
-    }
 
-    public async Task Start()
-    {
-        await MapConnectors();
-    }
-
-    private async Task MapConnectors()
-    {
         foreach (var connector in Connectors)
         {
             connector.OnReceive += (_, data) =>
             {
-                var response = ProcessorsContainer.Process(connector.DestinationProcessor, (string)data); 
+                var destinationProcessor = connector.DestinationProcessor;
+                var casted = (string)data;
+                var response = ProcessorsContainer.Process(destinationProcessor, casted);
             };
-            await connector.StartReceive(CancellationToken.None);
         }
     }
 
+    public async Task Start()
+    {
+        foreach (var connector in Connectors)
+        {
+            await connector.StartReceive(CancellationToken.None);
+        }
+    }
 
     private void ThrowIfConfigsNotValid()
     {

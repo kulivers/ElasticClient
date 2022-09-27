@@ -18,7 +18,7 @@ namespace KafkaInteractor
             }
 
             var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance) //todo egor mb it is not camel case
+                .WithNamingConvention(CamelCaseNamingConvention.Instance) 
                 .Build();
             var fileContent = File.ReadAllText(path);
             return deserializer.Deserialize<ClientConfig>(fileContent);
@@ -34,7 +34,7 @@ namespace KafkaInteractor
             var consumerConfig = new ConsumerConfig(ClientConfig);
             consumerConfig.GroupId ??= DefaultGroupId;
             consumerConfig.AutoOffsetReset ??= AutoOffsetReset.Latest;
-
+            consumerConfig.EnableAutoCommit = false;
             return consumerConfig;
         }
     }

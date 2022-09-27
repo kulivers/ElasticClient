@@ -23,4 +23,7 @@
     <data name="ElasticSearchNotHealthy" xml:space="preserve">
         <value>ElasticSearch server не в порядке. Вывод: \n {0}</value>
     </data>
+    <data name="TooBigDelayFromElastic" xml:space="preserve">
+        <value>Запрос на ElasticSearch сервер  ({0}) отменен изза слишком долгого ожидания</value>
+    </data>
 </root>

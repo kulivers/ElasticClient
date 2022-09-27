@@ -5,10 +5,9 @@ using Localization;
 
 namespace InputServices;
 
-public class KafkaInputService : IInputService
+public class KafkaInputService : IInputService, IDisposable
 {
-    private static readonly string TopicNotAvailable = IOServicesRecources.TopicNotAvailable; 
-    // private static readonly string TopicNotAvailableText = $"topic {0} is not available. Reason: {1}"; 
+    private static readonly string TopicNotAvailable = IOServicesRecources.TopicNotAvailable;
 
     private readonly IEnumerable<string> _inputTopics;
     private readonly ConsumerConfig _consumerConfig;
@@ -22,24 +21,34 @@ public class KafkaInputService : IInputService
     {
         _inputTopics = inputTopicses;
         _consumerConfig = consumerConfig;
-        StringConsumer = new ConsumerFactory(_consumerConfig).CreateStringConsumer();
+        var consumerFactory = new ConsumerFactory(_consumerConfig);
+        StringConsumer = consumerFactory.CreateStringConsumer();
     }
 
-
+    private int MessagesToCommit = 1000;
     public event EventHandler<object>? OnReceive;
 
     public async Task StartReceive(CancellationToken token)
     {
-        using (StringConsumer)
-        {
-            StringConsumer.Subscribe(_inputTopics);
+        var messagesToCommit = MessagesToCommit;
+        StringConsumer.Subscribe(_inputTopics);
 
-            while (!token.IsCancellationRequested)
+        while (!token.IsCancellationRequested)
+        {
+            var receive = StringConsumer.Consume(token);
+            if (receive == null)
             {
-                var receive = StringConsumer.Consume(token);
-                if (receive == null) continue;
-                var value = receive.Message.Value;
-                CallOnMessageEvent(value);
+                continue;
+            }
+
+            var value = receive.Message.Value;
+            CallOnMessageEvent(value);
+
+            messagesToCommit--;
+            if (messagesToCommit <= 0)
+            {
+                StringConsumer.Commit();
+                messagesToCommit = MessagesToCommit;
             }
         }
     }
@@ -67,5 +76,10 @@ public class KafkaInputService : IInputService
     private protected virtual void CallOnMessageEvent(string e)
     {
         OnReceive?.Invoke(this, e);
+    }
+
+    public void Dispose()
+    {
+        StringConsumer.Dispose();
     }
 }

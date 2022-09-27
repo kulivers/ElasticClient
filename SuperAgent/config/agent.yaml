@@ -16,5 +16,5 @@ connectors:
     destination: Elasticsearch writer1
     input: kafka
     inputConfig: D:\Work\myProcessorAgent\SuperAgent\config\input-kafka.yaml
-    output: 
-    outputConfig: 
+    output: kafka
+    outputConfig: D:\Work\myProcessorAgent\SuperAgent\config\output-kafka.yaml
