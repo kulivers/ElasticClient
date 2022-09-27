@@ -1,4 +1,5 @@
-﻿using Processor;
+﻿using Localization.Processors;
+using Processor;
 
 namespace ElasticClient;
 
@@ -6,7 +7,7 @@ namespace ElasticClient;
 public class ElasticProcessor : IProcessor<EsRequest, EsResponse>
 {
     private readonly EsClient _esClient;
-    private readonly string? NotSupportedConfigType = $"Not supported type of config file. Now supported types: {string.Join(" ,", Enum.GetValues(typeof(ConfigType)))}";
+    private readonly string? NotSupportedConfigType = ProcessorsResources.NotSupportedConfigType;
     public string ServiceName => ProcessorConfig.Name;
     public ProcessorConfig ProcessorConfig { get; }
 
@@ -14,7 +15,7 @@ public class ElasticProcessor : IProcessor<EsRequest, EsResponse>
     {
         if (config.ConfigType != ConfigType.Yaml)
         {
-            throw new NotSupportedException(NotSupportedConfigType);
+            throw new NotSupportedException(string.Format(NotSupportedConfigType, string.Join(", ", Enum.GetValues(typeof(ConfigType)))));
         }
 
         ProcessorConfig = config;

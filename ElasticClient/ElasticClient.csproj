@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Localization\Localization.csproj" />
       <ProjectReference Include="..\Processors.Api\Processors.Api.csproj" />
     </ItemGroup>
 

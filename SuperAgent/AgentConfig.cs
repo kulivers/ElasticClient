@@ -1,3 +1,4 @@
+using Localization.SuperAgent;
 using Processor;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -6,7 +7,7 @@ namespace ProcessorsRunner;
 
 public class AgentConfig
 {
-    private const string WrongTypeOfFileNeedToBeYaml = "wrong type of file. need to be .yaml";
+    private static readonly string WrongTypeOfFileNeedToBeYaml = SuperAgentResources.WrongTypeOfFileNeedToBeYaml;
     public IEnumerable<ProcessorConfig> Processors { get; set; } 
     public IEnumerable<ConnectorConfig> Connectors { get; set; }
     

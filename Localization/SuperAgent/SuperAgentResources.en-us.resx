@@ -11,10 +11,10 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="WrongTypeOfFileNeedToBeYaml" xml:space="preserve">
-        <value>Wrong type of file. need to be .yaml</value>
+    <data name="NoServiceForConnector" xml:space="preserve">
+        <value>There is no service {0} for some connector</value>
     </data>
-    <data name="TopicNotAvailable" xml:space="preserve">
-        <value>Kafka topic {0} is not available. Reason: {1}</value>
+    <data name="WrongTypeOfFileNeedToBeYaml" xml:space="preserve">
+        <value>wrong type of file. need to be .yaml</value>
     </data>
 </root>

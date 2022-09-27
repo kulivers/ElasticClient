@@ -1,4 +1,5 @@
 using Confluent.Kafka;
+using Localization;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -6,7 +7,7 @@ namespace InputServices;
 
 public class KafkaOutputConfig
 {
-    private const string WrongTypeOfFileNeedToBeYaml = "wrong type of file. need to be .yaml";
+    private static readonly string WrongTypeOfFileNeedToBeYaml = IOServicesRecources.WrongTypeOfFileNeedToBeYaml;
     public IEnumerable<string> Topics { get; set; }
     public ClientConfig Client { get; set; }
 

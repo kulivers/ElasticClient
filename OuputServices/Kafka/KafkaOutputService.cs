@@ -2,13 +2,14 @@
 using InputServices;
 using IOServices.Api;
 using KafkaInteractor;
+using Localization;
 
 namespace OuputServices;
 
 public class KafkaOutputService : IOutputService
 {
-    private static readonly string TopicNotAvailableText = $"topic {0} is not available. Reason: {1}";
-    private static readonly string CantSendMessage = $"Cant send message of type {0}";
+    private static readonly string TopicNotAvailableText = IOServicesRecources.TopicNotAvailable;
+    private static readonly string CantSendMessage = IOServicesRecources.CantSendMessageOfType;
 
     private readonly ProducerConfig _producerConfig;
     private IProducer<int, string> StringProducer { get; }

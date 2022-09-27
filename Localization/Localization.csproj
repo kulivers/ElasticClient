@@ -7,26 +7,53 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="ConnectorResources.resx">
+      <EmbeddedResource Update="Connector\ConnectorResources.resx">
         <Generator>PublicResXFileCodeGenerator</Generator>
         <LastGenOutput>ConnectorResources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
-      <EmbeddedResource Update="InputServicesRecources.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>InputServicesRecources.Designer.cs</LastGenOutput>
+      <EmbeddedResource Update="IOServices\IOServicesRecources.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>IOServicesRecources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Libs\ElasticClientResources.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>ElasticClientResources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Processors\ProcessorsResources.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>ProcessorsResources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="SuperAgent\SuperAgentResources.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>SuperAgentResources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="ConnectorResources.Designer.cs">
+      <Compile Update="Connector\ConnectorResources.Designer.cs">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>ConnectorResources.resx</DependentUpon>
       </Compile>
-      <Compile Update="InputServicesRecources.Designer.cs">
+      <Compile Update="IOServices\IOServicesRecources.Designer.cs">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
-        <DependentUpon>InputServicesRecources.resx</DependentUpon>
+        <DependentUpon>IOServicesRecources.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Libs\ElasticClientResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ElasticClientResources.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Processors\ProcessorsResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ProcessorsResources.resx</DependentUpon>
+      </Compile>
+      <Compile Update="SuperAgent\SuperAgentResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>SuperAgentResources.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 

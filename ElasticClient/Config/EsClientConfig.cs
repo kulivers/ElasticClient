@@ -1,4 +1,5 @@
 ﻿using ElasticClient.Entities;
+using Localization.Libs;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -6,8 +7,8 @@ namespace ElasticClient;
 
 public class EsClientConfig
 {
-    private const string WrongTypeOfFileNeedToBeYaml = "wrong type of file. need to be .yaml";
-    private const string UnknownAuthenticationType = "Unknown authentication type";
+    private static readonly string WrongTypeOfFileNeedToBeYaml = ElasticClientResources.WrongTypeOfFileNeedToBeYaml;
+    private static readonly string UnknownAuthenticationType = ElasticClientResources.UnknownAuthenticationType;
     private const string Basic = "BASIC";
     private const string ApiKey = "APIKEY";
     private const string Barrier = "BARRIER";
@@ -65,7 +66,7 @@ public class EsClientConfig
             }
             default:
             {
-                throw new Exception(UnknownAuthenticationType);
+                throw new NotSupportedException(UnknownAuthenticationType);
             }
         }
     }

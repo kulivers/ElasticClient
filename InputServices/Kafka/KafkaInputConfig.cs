@@ -7,7 +7,7 @@ namespace InputServices;
 
 public class KafkaInputConfig
 {
-    private static readonly string WrongTypeOfFileNeedToBeYaml = InputServicesRecources.WrongTypeOfFileNeedToBeYaml;
+    private static readonly string WrongTypeOfFileNeedToBeYaml = IOServicesRecources.WrongTypeOfFileNeedToBeYaml;
     public IEnumerable<string> Topics { get; set; }
     public ClientConfig Client { get; set; }
 

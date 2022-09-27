@@ -19,9 +19,15 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="WrongTypeOfFileNeedToBeYaml" xml:space="preserve">
-        <value>Wrong type of file. need to be .yaml</value>
+        <value>wrong type of file. need to be .yaml</value>
     </data>
-    <data name="TopicNotAvailable" xml:space="preserve">
-        <value>Kafka topic {0} is not available. Reason: {1}</value>
+    <data name="UnknownAuthenticationType" xml:space="preserve">
+        <value>Unknown authentication type</value>
+    </data>
+    <data name="ElasticSearchNotAvailable" xml:space="preserve">
+        <value>ElasticSearch server {0}:{1} is not available {2} seconds</value>
+    </data>
+    <data name="ElasticSearchNotHealthy" xml:space="preserve">
+        <value>ElasticSearch server is not healthy. Output: \n {0}</value>
     </data>
 </root>

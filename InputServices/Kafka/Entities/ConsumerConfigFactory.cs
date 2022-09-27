@@ -6,7 +6,7 @@ namespace KafkaInteractor
 {
     public class ConsumerConfigFactory
     {
-        private static readonly string WrongTypeOfFileNeedToBeYaml = InputServicesRecources.WrongTypeOfFileNeedToBeYaml;
+        private static readonly string WrongTypeOfFileNeedToBeYaml = IOServicesRecources.WrongTypeOfFileNeedToBeYaml;
         private const string DefaultGroupId = "foo";
         private ClientConfig ClientConfig { get; }
 

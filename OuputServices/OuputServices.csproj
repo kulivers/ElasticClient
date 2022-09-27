@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Localization\Localization.csproj" />
       <ProjectReference Include="..\OuputServices.Api\OuputServices.Api.csproj" />
     </ItemGroup>
 

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Confluent.Kafka;
+using Localization;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -7,8 +8,8 @@ namespace OuputServices.Kafka.Entities
 {
     public class ProducerConfigFactory
     {
-        private const string NoBootstrapServerSpecified = "No bootstrap server specified";
-        private const string WrongTypeOfFileNeedToBeYaml = "wrong type of file. need to be .yaml";
+        private static readonly string NoBootstrapServerSpecified = IOServicesRecources.NoBootstrapServerSpecified;
+        private static readonly string WrongTypeOfFileNeedToBeYaml = IOServicesRecources.WrongTypeOfFileNeedToBeYaml;
         private ClientConfig ClientConfig { get; }
 
         private static ClientConfig FromYaml(string path)

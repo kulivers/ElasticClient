@@ -1,12 +1,14 @@
 using System.Net.Http.Headers;
 using ElasticClient;
 using ElasticClient.Extensions;
+using Localization.Libs;
 
 public class EsClient
 {
-    private readonly string ElasticSearchNotAvailable = $"ElasticSearch server {0}:{1} is not available"; //loc
-    private readonly string ElasticSearchNotHealthy = $"ElasticSearch server is not healthy. Output: \n {0}"; //loc
+    private readonly string ElasticSearchNotAvailable = ElasticClientResources.ElasticSearchNotAvailable; 
+    private readonly string ElasticSearchNotHealthy = ElasticClientResources.ElasticSearchNotHealthy; //loc
     private const string AuthorizationHeaderKey = "Authorization";
+    private const string ContentTypeHeaderValue = "application/json";
     private HostConfig HostConfig { get; }
     private IAuthenticationCredentials? AuthCredentials { get; }
 
@@ -27,7 +29,7 @@ public class EsClient
                 httpClient.DefaultRequestHeaders.Add(AuthorizationHeaderKey, AuthCredentials.ToHeaderValue());
             }
 
-            var acceptHeader = new MediaTypeWithQualityHeaderValue("application/json");
+            var acceptHeader = new MediaTypeWithQualityHeaderValue(ContentTypeHeaderValue);
             httpClient.DefaultRequestHeaders.Accept.Add(acceptHeader); //ACCEPT header
             return httpClient;
         }
@@ -42,7 +44,7 @@ public class EsClient
 
         if (responseMessage == null)
         {
-            throw new HttpRequestException(string.Format(ElasticSearchNotAvailable, HostConfig.Host, HostConfig.Port));
+            throw new HttpRequestException(string.Format(ElasticSearchNotAvailable, HostConfig.Host, HostConfig.Port, delay.Seconds));
         }
 
         if (!responseMessage.IsSuccessStatusCode)

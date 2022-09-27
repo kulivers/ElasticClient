@@ -1,3 +1,4 @@
+using Localization.SuperAgent;
 using Microsoft.VisualBasic;
 using Processor;
 using ProcessorsRunner;
@@ -6,7 +7,7 @@ public class SuperAgent
 {
     private readonly ProcessorsConfig _processorsConfig;
     private readonly ConnectorsConfig _connectorsConfig;
-    private readonly string NoServiceForConnector = $"There is no service {0} for some connector";
+    private readonly string NoServiceForConnector = SuperAgentResources.NoServiceForConnector;
     public IProcessorsContainer ProcessorsContainer { get; }
     public List<IConnector> Connectors { get; set; }
 

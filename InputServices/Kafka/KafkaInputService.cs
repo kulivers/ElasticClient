@@ -7,7 +7,7 @@ namespace InputServices;
 
 public class KafkaInputService : IInputService
 {
-    private static readonly string TopicNotAvailable = InputServicesRecources.TopicNotAvailable; 
+    private static readonly string TopicNotAvailable = IOServicesRecources.TopicNotAvailable; 
     // private static readonly string TopicNotAvailableText = $"topic {0} is not available. Reason: {1}"; 
 
     private readonly IEnumerable<string> _inputTopics;
