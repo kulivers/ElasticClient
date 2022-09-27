@@ -2,7 +2,7 @@
 
 public interface IInputService
 {
-    event EventHandler<object> OnReceive;
+    event EventHandler<InputResponseModel> OnReceive;
     Task StartReceive(CancellationToken token);
-    void CheckHealth();
+    void CheckHealth(double secondsToResponse);
 }

@@ -3,6 +3,6 @@ namespace IOServices.Api;
 public interface IOutputService
 {
     event EventHandler<object> OnSend;
-    Task<object> Send(object o, CancellationToken token);
-    void CheckHealth();
+    Task<OutputResponseModel> Send(object toSend, CancellationToken token);
+    void CheckHealth(double seconds);
 }

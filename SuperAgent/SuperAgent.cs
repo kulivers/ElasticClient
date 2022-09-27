@@ -1,5 +1,7 @@
+using IOServices.Api;
 using Localization.SuperAgent;
 using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 using Processor;
 using ProcessorsRunner;
 
@@ -39,11 +41,10 @@ public class SuperAgent
 
         foreach (var connector in Connectors)
         {
-            connector.OnReceive += (_, data) =>
+            connector.OnReceive += (_, inputResponseModel) =>
             {
                 var destinationProcessor = connector.DestinationProcessor;
-                var casted = (string)data;
-                var response = ProcessorsContainer.Process(destinationProcessor, casted);
+                var response = ProcessorsContainer.Process(destinationProcessor, inputResponseModel.Data);
             };
         }
     }
@@ -52,7 +53,7 @@ public class SuperAgent
     {
         foreach (var connector in Connectors)
         {
-            await connector.StartReceive(CancellationToken.None);
+            connector.StartReceive(CancellationToken.None).Start();
         }
     }
 

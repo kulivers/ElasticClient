@@ -10,5 +10,5 @@ public interface IProcessorsContainer : IEnumerable<IProcessor>
     public IProcessor? GetProcessor(string serviceName);
 
     public TOut? Process<TIn, TOut>(string serviceName, TIn input);
-    public object? Process(string processorName, string message);
+    public object? Process(string processorName, string? message);
 }

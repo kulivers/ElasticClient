@@ -26,7 +26,7 @@ public class KafkaInputService : IInputService, IDisposable
     }
 
     private int MessagesToCommit = 1000;
-    public event EventHandler<object>? OnReceive;
+    public event EventHandler<InputResponseModel>? OnReceive;
 
     public async Task StartReceive(CancellationToken token)
     {
@@ -53,7 +53,7 @@ public class KafkaInputService : IInputService, IDisposable
         }
     }
 
-    public void CheckHealth()
+    public void CheckHealth(double secondsToResponse)
     {
         var adminConfig = new AdminClientConfig(_consumerConfig);
         var adminClient = new AdminClientBuilder(adminConfig).Build();
@@ -61,12 +61,13 @@ public class KafkaInputService : IInputService, IDisposable
         {
             foreach (var topic in _inputTopics)
             {
-                var metadata = adminClient.GetMetadata(topic, new TimeSpan(0, 0, 10));
+                var metadata = adminClient.GetMetadata(topic,  TimeSpan.FromSeconds(secondsToResponse));
                 foreach (var topicMetadata in metadata.Topics)
                 {
                     if (topicMetadata.Error.IsError)
                     {
-                        throw new IOException(string.Format(TopicNotAvailable, topicMetadata.Topic, topicMetadata.Error.Reason));
+                        var exMessage = string.Format(TopicNotAvailable, topicMetadata.Topic, topicMetadata.Error.Reason);
+                        throw new IOException(exMessage);
                     }
                 }
             }
@@ -75,7 +76,8 @@ public class KafkaInputService : IInputService, IDisposable
 
     private protected virtual void CallOnMessageEvent(string e)
     {
-        OnReceive?.Invoke(this, e);
+        var inputServiceResponseModel = new InputResponseModel(e);
+        OnReceive?.Invoke(this, inputServiceResponseModel);
     }
 
     public void Dispose()

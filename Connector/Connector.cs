@@ -7,7 +7,8 @@ public class Connector : IConnector
     public IInputService InputService { get; }
     public IOutputService? OutputService { get; }
     public string DestinationProcessor { get; }
-    public event EventHandler<object>? OnReceive;
+    private double SecondsToResponse => 5;
+    public event EventHandler<InputResponseModel>? OnReceive;
 
     internal Connector(string destinationProcessor, IInputService inputService, IOutputService? outputService = null)
     {
@@ -17,28 +18,47 @@ public class Connector : IConnector
         InputService.OnReceive += CallOnReceiveMethod;
     }
 
-    private async Task SendToOutputService(object e)
+    private async void CallOnReceiveMethod(object? sender, object inputResponseModel)
     {
-        var cts = new CancellationTokenSource(new TimeSpan(10, 10, 5));//todo after all
-        if (OutputService != null)
+        var casted = (InputResponseModel)inputResponseModel;
+        OnReceive?.Invoke(sender, casted);
+        if (casted.Data != null)
         {
-            var result = await OutputService.Send(e, cts.Token); // todo if canceled - catch that
+            await SendToOutputService(casted.Data);
         }
-    }
-    private async void CallOnReceiveMethod(object? sender, object e)
-    {
-        OnReceive?.Invoke(sender, e);
-        await SendToOutputService(e);
     }
 
     public async Task StartReceive(CancellationToken token)
     {
-        InputService.StartReceive(token).Start(); 
+        InputService.StartReceive(token).Start();
     }
 
     public void CheckHealth()
     {
-        InputService.CheckHealth();
-        OutputService?.CheckHealth();
+        InputService.CheckHealth(SecondsToResponse);
+        OutputService?.CheckHealth(SecondsToResponse);
+    }
+
+    private async Task SendToOutputService(object toSend)
+    {
+        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(SecondsToResponse)); 
+        if (OutputService != null)
+        {
+            //here we can do something with response after output
+            try
+            {
+                var result = await OutputService.Send(toSend, cts.Token);
+            }
+            catch (TaskCanceledException exception)
+            {
+                var outputModel = new OutputResponseModel(exception);
+                var result = outputModel;
+            }
+            catch (Exception exception)
+            {
+                var outputModel = new OutputResponseModel(exception);
+                var result = outputModel;
+            }
+        }
     }
 }

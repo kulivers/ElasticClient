@@ -13,22 +13,7 @@ public class EsClientConfig
     private const string ApiKey = "APIKEY";
     private const string Barrier = "BARRIER";
     private const string OAuth = "OAUTH";
-
-    public static EsClientConfig FromYaml(string path)
-    {
-        if (!path.EndsWith(".yaml"))
-        {
-            throw new ArgumentException(WrongTypeOfFileNeedToBeYaml);
-        }
-
-        var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance) 
-            .Build();
-        var fileContent = File.ReadAllText(path);
-
-        return deserializer.Deserialize<EsClientConfig>(fileContent);
-    }
-
+    
 
     public HostConfig Host { get; set; }
     public AuthenticationConfig Authentication { get; set; }
@@ -70,4 +55,19 @@ public class EsClientConfig
             }
         }
     }
+    public static EsClientConfig FromYaml(string path)
+    {
+        if (!path.EndsWith(".yaml"))
+        {
+            throw new ArgumentException(WrongTypeOfFileNeedToBeYaml);
+        }
+
+        var deserializer = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance) 
+            .Build();
+        var fileContent = File.ReadAllText(path);
+
+        return deserializer.Deserialize<EsClientConfig>(fileContent);
+    }
+
 }

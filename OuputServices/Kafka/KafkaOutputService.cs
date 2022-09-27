@@ -30,27 +30,38 @@ public class KafkaOutputService : IOutputService, IDisposable
         OutputTopics = outputTopics;
     }
 
-    private async Task<object> SendString(string o, CancellationToken token)
+    private async Task<OutputResponseModel> SendString(string toSend, CancellationToken token)
     {
-        var message = new Message<int, string>() { Value = o };
-        var deliveryResults = new List<DeliveryResult<int, string>>();
+        var message = new Message<int, string>() { Value = toSend };
+        var outputModels = new List<OutputResponseModel>();
+
         foreach (var topic in OutputTopics)
         {
-            var deliveryResult = await StringProducer.ProduceAsync(topic, message, token);
-            deliveryResults.Add(deliveryResult);
-            CallOnSendEvent(deliveryResult);
+            try
+            {
+                var deliveryResult = await StringProducer.ProduceAsync(topic, message, token);
+                CallOnSendEvent(deliveryResult);
+                var outputModel = new OutputResponseModel(deliveryResult);
+                outputModels.Add(outputModel);
+            }
+            catch (Exception e)
+            {
+                var outputModel = new OutputResponseModel(e);
+                outputModels.Add(outputModel);
+            }
         }
-        return deliveryResults;
+
+        return new OutputResponseModel(outputModels);
     }
 
-    public async Task<object> Send(object o, CancellationToken token)
+    public async Task<OutputResponseModel> Send(object toSend, CancellationToken token)
     {
-        if (o is string message)
+        if (toSend is string message)
         {
             return await SendString(message, token);
         }
 
-        throw new NotImplementedException(string.Format(CantSendMessage, o.GetType()));
+        throw new NotImplementedException(string.Format(CantSendMessage, toSend.GetType()));
     }
 
     private void CallOnSendEvent(object deliveryResult)
@@ -59,7 +70,7 @@ public class KafkaOutputService : IOutputService, IDisposable
     }
 
 
-    public void CheckHealth()
+    public void CheckHealth(double secondsToResponse)
     {
         var adminConfig = new AdminClientConfig(_producerConfig);
         var adminClient = new AdminClientBuilder(adminConfig).Build();
@@ -67,7 +78,7 @@ public class KafkaOutputService : IOutputService, IDisposable
         {
             foreach (var outputTopic in OutputTopics)
             {
-                var metadata = adminClient.GetMetadata(outputTopic, new TimeSpan(0, 0, 10));
+                var metadata = adminClient.GetMetadata(outputTopic,  TimeSpan.FromSeconds(secondsToResponse));
                 foreach (var topic in metadata.Topics)
                 {
                     if (topic.Error.IsError)

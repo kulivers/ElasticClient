@@ -1,4 +1,4 @@
-namespace Connectors.Test;
+namespace InputServices.Test;
 
 public class Tests
 {

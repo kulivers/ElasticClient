@@ -8,7 +8,7 @@ public class HostConfig
 
     public HostConfig()
     {
-        
+        //for mapping from config file    
     }
 
     public HostConfig(string host, int port, string scheme = "https")

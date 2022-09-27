@@ -13,7 +13,7 @@ public class KafkaInputConfig
 
     public KafkaInputConfig()
     {
-        
+        //for mapping from config file
     }
     public KafkaInputConfig(string path)
     {
@@ -25,7 +25,6 @@ public class KafkaInputConfig
     {
         if (!path.EndsWith(".yaml"))
         {
-            
             throw new ArgumentException(WrongTypeOfFileNeedToBeYaml);
         }
 

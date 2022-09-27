@@ -31,7 +31,6 @@ public class ProcessorContainer : IProcessorsContainer
                 }
                 else
                 {
-                    
                     throw new ApplicationException(string.Format(CantLoadService, serviceInstance));
                 }
             }
@@ -81,10 +80,9 @@ public class ProcessorContainer : IProcessorsContainer
         var processor = (IProcessor<TIn, TOut>)GetProcessor(serviceName)!;
         if (processor == null)
         {
-            
             throw new InvalidOperationException(string.Format(UnknownProcessor, serviceName));
         }
-        
+
         var processorType = processor.GetType();
         var (tIn, tOut) = GetInputOutputTypes(processorType);
 
@@ -110,17 +108,17 @@ public class ProcessorContainer : IProcessorsContainer
         return typeName.Contains(criteriaOrEmpty);
     }
 
-    public object? Process(string processorName, string message)
+    public object? Process(string processorName, string? message)
     {
         var processor = GetProcessor(processorName);
         if (processor == null)
         {
             throw new InvalidOperationException(string.Format(UnknownProcessor, processorName));
         }
-        
+
         var processorType = processor.GetType();
         var (tIn, tOut) = GetInputOutputTypes(processorType);
-        var input = JsonConvert.DeserializeObject(message, tIn);
+        var input = message == null ? null : JsonConvert.DeserializeObject(message, tIn);
         var method = processorType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .First(mi => mi.ReturnType == tOut && mi.GetParameters().Any(p => p.ParameterType == tIn) &&
                          mi.Name == "Process");
@@ -131,6 +129,7 @@ public class ProcessorContainer : IProcessorsContainer
     {
         return Processors.GetEnumerator();
     }
+
     IEnumerator IEnumerable.GetEnumerator()
     {
         return ((IEnumerable)Processors).GetEnumerator();
