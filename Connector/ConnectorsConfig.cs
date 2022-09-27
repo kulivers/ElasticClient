@@ -12,8 +12,8 @@ public class ConnectorConfig
 {
     public string Destination { get; set; }
     public InputService Input { get; set; }
-    public OutputService? Output { get; set; }
     public string InputConfig { get; set; }
+    public OutputService? Output { get; set; }
     public string? OutputConfig { get; set; }
 }
 
@@ -25,6 +25,5 @@ public enum InputService
 
 public enum OutputService
 {
-    Kafka,
-    None
+    Kafka
 }

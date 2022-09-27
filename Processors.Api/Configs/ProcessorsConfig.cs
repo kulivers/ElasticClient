@@ -5,6 +5,7 @@ namespace Processor;
 
 public class ProcessorsConfig
 {
+    private const string? NotSupportedConfigType = "Not supported type of config file.";
     public IEnumerable<ProcessorConfig> Processors { get; set; }
 
     public ProcessorsConfig()
@@ -21,7 +22,7 @@ public class ProcessorsConfig
     {
         if (!path.EndsWith(".yaml"))
         {
-            throw new ArgumentException("wrong type of file, need to be .yaml");
+            throw new NotSupportedException(NotSupportedConfigType);
         }
         var deserializer = new DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance) //todo egor mb it is not camel case
@@ -33,6 +34,7 @@ public class ProcessorsConfig
 
 public class ProcessorConfig
 {
+    private const string? NotSupportedConfigType = "Not supported type of config file.";
     public string Dll { get; set; }
     public string Config { get; set; }
     public string Name { get; set; }
@@ -41,11 +43,11 @@ public class ProcessorConfig
     {
         get
         {
-            if (Config.EndsWith("yaml")) return ConfigType.Yaml;
-            if (Config.EndsWith("json")) return ConfigType.Json;
-            if (Config.EndsWith("txt")) return ConfigType.Text;
-            if (Config.EndsWith("xml")) return ConfigType.Xml;
-            throw new NotImplementedException("Unsupported type of config");
+            if (Config.EndsWith("yaml"))
+            {
+                return ConfigType.Yaml;
+            }
+            throw new NotImplementedException(NotSupportedConfigType);
         }
     }
 
@@ -65,7 +67,4 @@ public class ProcessorConfig
 public enum ConfigType
 {
     Yaml,
-    Json,
-    Xml,
-    Text
 }

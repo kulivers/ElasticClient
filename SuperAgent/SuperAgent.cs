@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic;
 using Processor;
 using ProcessorsRunner;
 
@@ -5,6 +6,7 @@ public class SuperAgent
 {
     private readonly ProcessorsConfig _processorsConfig;
     private readonly ConnectorsConfig _connectorsConfig;
+    private readonly string NoServiceForConnector = $"There is no service {0} for some connector";
     public IProcessorsContainer ProcessorsContainer { get; }
     public List<IConnector> Connectors { get; set; }
 
@@ -72,9 +74,10 @@ public class SuperAgent
             foreach (var connectorConfig in _connectorsConfig.Connectors)
             {
                 if (!_processorsConfig.Processors.Any(cfg => cfg.Name == connectorConfig.Destination))
-                    throw new ApplicationException(
-                        $"There is no service {connectorConfig.Destination} for some connector");
-                
+                {
+                    throw new ApplicationException(Strings.Format(NoServiceForConnector, connectorConfig.Destination));
+                }
+
                 var inputConfig = connectorConfig.InputConfig;
                 File.Open(inputConfig, FileMode.Open, FileAccess.Read).Dispose();
 

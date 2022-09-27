@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
 
 namespace KafkaInteractor
 {

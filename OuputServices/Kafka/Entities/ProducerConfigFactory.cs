@@ -7,13 +7,15 @@ namespace OuputServices.Kafka.Entities
 {
     public class ProducerConfigFactory
     {
+        private const string NoBootstrapServerSpecified = "No bootstrap server specified";
+        private const string WrongTypeOfFileNeedToBeYaml = "wrong type of file. need to be .yaml";
         private ClientConfig ClientConfig { get; }
 
         private static ClientConfig FromYaml(string path)
         {
             if (!path.EndsWith(".yaml"))
             {
-                throw new ArgumentException("wrong type of file. need to be .yaml");
+                throw new ArgumentException(WrongTypeOfFileNeedToBeYaml);
             }
 
             var deserializer = new DeserializerBuilder()
@@ -36,12 +38,12 @@ namespace OuputServices.Kafka.Entities
         {
             if (ClientConfig.BootstrapServers == null)
             {
-                throw new Exception("No bootstrap server specified");
+                throw new Exception(NoBootstrapServerSpecified);
             }
 
             ClientConfig.Acks ??= Acks.All;
             ClientConfig.ClientId ??= Dns.GetHostName();
-            
+
             var producerConfig = new ProducerConfig(ClientConfig)
             {
                 Partitioner = Partitioner.Consistent,

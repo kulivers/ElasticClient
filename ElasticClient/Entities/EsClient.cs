@@ -4,6 +4,9 @@ using ElasticClient.Extensions;
 
 public class EsClient
 {
+    private readonly string ElasticSearchNotAvailable = $"ElasticSearch server {0}:{1} is not available"; //loc
+    private readonly string ElasticSearchNotHealthy = $"ElasticSearch server is not healthy. Output: \n {0}"; //loc
+    private const string AuthorizationHeaderKey = "Authorization";
     private HostConfig HostConfig { get; }
     private IAuthenticationCredentials? AuthCredentials { get; }
 
@@ -21,7 +24,7 @@ public class EsClient
 
             if (AuthCredentials != null)
             {
-                httpClient.DefaultRequestHeaders.Add("Authorization", AuthCredentials.ToHeaderValue());
+                httpClient.DefaultRequestHeaders.Add(AuthorizationHeaderKey, AuthCredentials.ToHeaderValue());
             }
 
             var acceptHeader = new MediaTypeWithQualityHeaderValue("application/json");
@@ -39,14 +42,13 @@ public class EsClient
 
         if (responseMessage == null)
         {
-            throw new HttpRequestException(
-                $"ElasticSearch server {HostConfig.Host}:{HostConfig.Port} is not available");
+            throw new HttpRequestException(string.Format(ElasticSearchNotAvailable, HostConfig.Host, HostConfig.Port));
         }
 
         if (!responseMessage.IsSuccessStatusCode)
         {
-            var response = await responseMessage.Content.ReadAsStringAsync(CancellationToken.None);
-            throw new HttpRequestException($"ElasticSearch server is not healthy. Output: {response}"); //todo ask
+            var responseContent = await responseMessage.Content.ReadAsStringAsync(CancellationToken.None);
+            throw new HttpRequestException(string.Format(ElasticSearchNotHealthy, responseContent));
         }
     }
 

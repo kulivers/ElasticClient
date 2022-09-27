@@ -6,6 +6,7 @@ namespace InputServices;
 
 public class KafkaOutputConfig
 {
+    private const string WrongTypeOfFileNeedToBeYaml = "wrong type of file. need to be .yaml";
     public IEnumerable<string> Topics { get; set; }
     public ClientConfig Client { get; set; }
 
@@ -23,7 +24,7 @@ public class KafkaOutputConfig
     {
         if (!path.EndsWith(".yaml"))
         {
-            throw new ArgumentException("wrong type of file. need to be .yaml");
+            throw new ArgumentException(WrongTypeOfFileNeedToBeYaml);
         }
 
         var deserializer = new DeserializerBuilder()

@@ -6,15 +6,25 @@ namespace ElasticClient;
 
 public class EsClientConfig
 {
+    private const string WrongTypeOfFileNeedToBeYaml = "wrong type of file. need to be .yaml";
+    private const string UnknownAuthenticationType = "Unknown authentication type";
+    private const string Basic = "BASIC";
+    private const string ApiKey = "APIKEY";
+    private const string Barrier = "BARRIER";
+    private const string OAuth = "OAUTH";
+
     public static EsClientConfig FromYaml(string path)
     {
         if (!path.EndsWith(".yaml"))
-            throw new ArgumentException("wrong type of file. need to be .yaml");
+        {
+            throw new ArgumentException(WrongTypeOfFileNeedToBeYaml);
+        }
+
         var deserializer = new DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance) //todo egor mb it is not camel case
             .Build();
         var fileContent = File.ReadAllText(path);
-        
+
         return deserializer.Deserialize<EsClientConfig>(fileContent);
     }
 
@@ -36,26 +46,26 @@ public class EsClientConfig
     {
         switch (Authentication.Type.ToUpper())
         {
-            case "BASIC":
+            case Basic:
             {
                 return Authentication.Token == null
                     ? new BasicCredentials(Authentication.Username!, Authentication.Password!)
                     : new BasicCredentials(Authentication.Token);
             }
-            case "APIKEY":
+            case ApiKey:
             {
                 return Authentication.Token == null
                     ? new ApiKeyCredentials(Authentication.Username!, Authentication.Password!)
                     : new ApiKeyCredentials(Authentication.Token);
             }
-            case "BARRIER":
-            case "OAUTH":
+            case Barrier:
+            case OAuth:
             {
                 return new BarrierCredentials(Authentication.Token!);
             }
             default:
             {
-                throw new Exception("Unknown authentication type");
+                throw new Exception(UnknownAuthenticationType);
             }
         }
     }

@@ -1,19 +1,19 @@
-﻿using System.Net;
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
-
 namespace KafkaInteractor
 {
     public class ConsumerConfigFactory
     {
+        private const string WrongTypeOfFileNeedToBeYaml = "wrong type of file. need to be .yaml";
+        private const string DefaultGroupId = "foo";
         private ClientConfig ClientConfig { get; }
 
         private static ClientConfig FromYaml(string path)
         {
             if (!path.EndsWith(".yaml"))
             {
-                throw new ArgumentException("wrong type of file. need to be .yaml");
+                throw new ArgumentException(WrongTypeOfFileNeedToBeYaml);
             }
 
             var deserializer = new DeserializerBuilder()
@@ -31,9 +31,9 @@ namespace KafkaInteractor
         public ConsumerConfig GetDefaultConsumerConfig()
         {
             var consumerConfig = new ConsumerConfig(ClientConfig);
-            consumerConfig.GroupId ??= "foo";
+            consumerConfig.GroupId ??= DefaultGroupId;
             consumerConfig.AutoOffsetReset ??= AutoOffsetReset.Latest;
-            
+
             return consumerConfig;
         }
     }

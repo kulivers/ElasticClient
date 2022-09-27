@@ -6,6 +6,8 @@ namespace InputServices;
 
 public class KafkaInputService : IInputService
 {
+    private static readonly string TopicNotAvailableText = $"topic {0} is not available. Reason: {1}"; 
+
     private readonly IEnumerable<string> _inputTopics;
     private readonly ConsumerConfig _consumerConfig;
     private IConsumer<int, string> StringConsumer { get; }
@@ -49,11 +51,11 @@ public class KafkaInputService : IInputService
             foreach (var topic in _inputTopics)
             {
                 var metadata = adminClient.GetMetadata(topic, new TimeSpan(0, 0, 10));
-                foreach (var t in metadata.Topics)
+                foreach (var topicMetadata in metadata.Topics)
                 {
-                    if (t.Error.IsError)
+                    if (topicMetadata.Error.IsError)
                     {
-                        throw new IOException($"topic {t.Topic} is not available. Reason: {t.Error.Reason}");
+                        throw new IOException(string.Format(TopicNotAvailableText, topicMetadata.Topic, topicMetadata.Error.Reason));
                     }
                 }
             }

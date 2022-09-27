@@ -7,6 +7,8 @@ using ProcessorsRunner;
 
 public class ProcessorContainer : IProcessorsContainer
 {
+    private readonly string CantLoadService = $"Cant load service {0}";
+    private readonly string UnknownProcessor = $"Unknown processor: {0}";
     public List<IProcessor?> Processors { get; }
 
     public ProcessorContainer(ProcessorsConfig processorsConfig)
@@ -29,7 +31,8 @@ public class ProcessorContainer : IProcessorsContainer
                 }
                 else
                 {
-                    throw new ApplicationException($"Cant load service {serviceInstance}");
+                    
+                    throw new ApplicationException(string.Format(CantLoadService, serviceInstance));
                 }
             }
         }
@@ -78,7 +81,8 @@ public class ProcessorContainer : IProcessorsContainer
         var processor = (IProcessor<TIn, TOut>)GetProcessor(serviceName)!;
         if (processor == null)
         {
-            throw new InvalidOperationException($"Unknown processor: {serviceName}");
+            
+            throw new InvalidOperationException(string.Format(UnknownProcessor, serviceName));
         }
         
         var processorType = processor.GetType();
@@ -109,7 +113,7 @@ public class ProcessorContainer : IProcessorsContainer
         var processor = GetProcessor(processorName);
         if (processor == null)
         {
-            throw new InvalidOperationException($"Unknown processor: {processorName}");
+            throw new InvalidOperationException(string.Format(UnknownProcessor, processorName));
         }
         
         var processorType = processor.GetType();

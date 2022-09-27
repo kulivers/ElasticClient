@@ -7,6 +7,9 @@ namespace OuputServices;
 
 public class KafkaOutputService : IOutputService
 {
+    private static readonly string TopicNotAvailableText = $"topic {0} is not available. Reason: {1}";
+    private static readonly string CantSendMessage = $"Cant send message of type {0}";
+
     private readonly ProducerConfig _producerConfig;
     private IProducer<int, string> StringProducer { get; }
     private IEnumerable<string> OutputTopics { get; }
@@ -40,7 +43,7 @@ public class KafkaOutputService : IOutputService
             return;
         }
 
-        throw new NotImplementedException("Cant send not string message");
+        throw new NotImplementedException(string.Format(CantSendMessage, o.GetType()));
     }
 
     private void CallOnSendEvent(object deliveryResult)
@@ -73,7 +76,7 @@ public class KafkaOutputService : IOutputService
                 {
                     if (topic.Error.IsError)
                     {
-                        throw new IOException($"topic {topic.Topic} is not available. Reason: {topic.Error.Reason}");
+                        throw new IOException(string.Format(TopicNotAvailableText, topic.Topic, topic.Error.Reason));
                     }
                 }
             }
