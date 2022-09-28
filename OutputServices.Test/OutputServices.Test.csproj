@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Confluent.Kafka" Version="1.9.4-RC1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
         <PackageReference Include="NUnit" Version="3.13.3" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
@@ -18,8 +19,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Helpers\Helpers.csproj" />
-      <ProjectReference Include="..\InputServices\InputServices.csproj" />
-      <ProjectReference Include="..\OuputServices\OuputServices.csproj" />
     </ItemGroup>
 
 </Project>

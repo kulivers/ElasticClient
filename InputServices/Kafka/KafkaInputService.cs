@@ -17,25 +17,26 @@ public class KafkaInputService : IInputService, IDisposable
     {
     }
 
-    public KafkaInputService(ConsumerConfig consumerConfig, IEnumerable<string> inputTopicses)
+    public KafkaInputService(ConsumerConfig consumerConfig, IEnumerable<string> inputTopics)
     {
-        _inputTopics = inputTopicses;
+        _inputTopics = inputTopics;
         _consumerConfig = consumerConfig;
         var consumerFactory = new ConsumerFactory(_consumerConfig);
         StringConsumer = consumerFactory.CreateStringConsumer();
     }
 
-    private int MessagesToCommit = 1000;
+    private const int MessagesToCommit = 1000;
     public event EventHandler<InputResponseModel>? OnReceive;
+    public bool ReceivedAny { get; private set; }
 
-    public async Task StartReceive(CancellationToken token)
+    public async Task StartReceive(CancellationToken appStop)
     {
         var messagesToCommit = MessagesToCommit;
         StringConsumer.Subscribe(_inputTopics);
 
-        while (!token.IsCancellationRequested)
+        while (!appStop.IsCancellationRequested)
         {
-            var receive = StringConsumer.Consume(token);
+            var receive = StringConsumer.Consume(appStop);
             if (receive == null)
             {
                 continue;
@@ -76,6 +77,7 @@ public class KafkaInputService : IInputService, IDisposable
 
     private protected virtual void CallOnMessageEvent(string e)
     {
+        ReceivedAny = true;
         var inputServiceResponseModel = new InputResponseModel(e);
         OnReceive?.Invoke(this, inputServiceResponseModel);
     }

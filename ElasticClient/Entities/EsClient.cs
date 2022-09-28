@@ -77,7 +77,7 @@ public class EsClient
         return WriteRecord(request, token);
     }
 
-    public EsResponse WriteRecord(EsRequest esRequest, CancellationToken token = default)
+    public EsResponse WriteRecord(EsRequest esRequest, CancellationToken token = default)//todo fix dat
     {
         var requestMessage = esRequest.ToHttpRequestMessage();
         try

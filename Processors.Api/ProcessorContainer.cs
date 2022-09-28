@@ -89,7 +89,7 @@ public class ProcessorContainer : IProcessorsContainer
         var method = processorType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .First(mi => mi.ReturnType == tOut && mi.GetParameters().Any(p => p.ParameterType == tIn) &&
                          mi.Name == "Process");
-        return (TOut)method.Invoke(processor, new[] { (object)input! })!;
+        return (TOut)method.Invoke(processor, new[] { (object)input! })!; //todo fix here cancelation toker
     }
 
     private static (Type tIn, Type tOut) GetInputOutputTypes(Type containerType)
