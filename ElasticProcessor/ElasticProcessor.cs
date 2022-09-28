@@ -26,26 +26,26 @@ public class ElasticProcessor : IProcessor<EsRequest, EsResponse>
         _esClient = new EsClient(clientConfig);
     }
 
-    public async Task CheckHealth()
+    public async void CheckHealth()
     {
         await _esClient.CheckElasticAvailable(SecondsToResponse);
     }
 
-    public EsResponse Process(EsRequest value)
+    public EsResponse Process(EsRequest value, CancellationToken token)
     {
-        return _esClient.WriteRecord(value);
+        return _esClient.WriteRecord(value, token);
     }
 
-    public async Task<EsResponse> ProcessAsync(EsRequest value)
+    public async Task<EsResponse> ProcessAsync(EsRequest value, CancellationToken token)
     {
-        return await _esClient.WriteRecordAsync(value);
+        return await _esClient.WriteRecordAsync(value, token);
     }
 
-    public TOut Process<TIn, TOut>(TIn value)
+    public TOut Process<TIn, TOut>(TIn value, CancellationToken token)
     {
         if (value is EsRequest esRequest)
         {
-            var response = Process(esRequest);
+            var response = Process(esRequest,token);
             if (response is TOut castedResponse)
                 return castedResponse;
         }

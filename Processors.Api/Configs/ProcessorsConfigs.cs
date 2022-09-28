@@ -1,19 +1,13 @@
-﻿using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
+﻿using Localization.Processors;
 
 namespace Processor;
 
-public class ProcessorsConfig
+public class ProcessorsConfigs
 {
-    private const string? NotSupportedConfigType = "Not supported type of config file.";
+    //for config file
     public IEnumerable<ProcessorConfig> Processors { get; set; }
 
-    public ProcessorsConfig()
-    {
-        
-    }
-
-    public ProcessorsConfig(IEnumerable<ProcessorConfig> processors)
+    public ProcessorsConfigs(IEnumerable<ProcessorConfig> processors)
     {
         Processors = processors;
     }
@@ -21,7 +15,7 @@ public class ProcessorsConfig
 
 public class ProcessorConfig
 {
-    private const string? NotSupportedConfigType = "Not supported type of config file.";
+    private static readonly string? NotSupportedConfigType = ProcessorsResources.NotSupportedConfigType;
     public string Dll { get; set; }
     public string Config { get; set; }
     public string Name { get; set; }

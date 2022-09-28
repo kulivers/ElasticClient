@@ -1,8 +1,6 @@
 ﻿using ElasticClient.Entities;
 using Localization.Libs;
 using Utils;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 namespace ElasticClient;
 

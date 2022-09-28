@@ -63,21 +63,19 @@ public class EsClient
         }
     }
 
-    public EsResponse WriteRecord(string index, CancellationToken token, string data, string? docId = null,
-        string? type = "_doc")
+    public EsResponse WriteRecord(string index, CancellationToken token, string data, string? docId = null, string? type = "_doc")
     {
         var parameters = new RequestParameters(index, type, docId);
         return WriteRecord(parameters, token, data);
     }
 
-    public EsResponse WriteRecord(RequestParameters requestParameters, CancellationToken token,
-        string data)
+    public EsResponse WriteRecord(RequestParameters requestParameters, CancellationToken token, string data)
     {
         var request = new EsRequest(HostConfig, requestParameters, data);
         return WriteRecord(request, token);
     }
 
-    public EsResponse WriteRecord(EsRequest esRequest, CancellationToken token = default)//todo fix dat
+    public EsResponse WriteRecord(EsRequest esRequest, CancellationToken token) //todo fix dat
     {
         var requestMessage = esRequest.ToHttpRequestMessage();
         try
@@ -85,7 +83,7 @@ public class EsClient
             var result = Client.Send(requestMessage, token).ToEsResponseAsync().Result;
             return result;
         }
-        catch (TaskCanceledException e)
+        catch (TaskCanceledException)
         {
             var exInfo = string.Format(TooBigDelayFromElastic, requestMessage.RequestUri?.Host);
             return new EsResponse(false, null, exInfo);
@@ -96,22 +94,19 @@ public class EsClient
         }
     }
 
-    public Task<EsResponse> WriteRecordAsync(string index, CancellationToken token, string? data = null,
-        string? docId = null,
-        string? type = "_doc")
+    public Task<EsResponse> WriteRecordAsync(string index, CancellationToken token, string? data = null, string? docId = null, string? type = "_doc")
     {
         var parameters = new RequestParameters(index, type, docId);
         return WriteRecordAsync(parameters, token, data);
     }
 
-    public async Task<EsResponse> WriteRecordAsync(RequestParameters requestParameters, CancellationToken token,
-        string? data = null)
+    public async Task<EsResponse> WriteRecordAsync(RequestParameters requestParameters, CancellationToken token, string? data = null)
     {
         var request = new EsRequest(HostConfig, requestParameters, data);
         return await WriteRecordAsync(request, token);
     }
 
-    public async Task<EsResponse> WriteRecordAsync(EsRequest esRequest, CancellationToken token = default)
+    public async Task<EsResponse> WriteRecordAsync(EsRequest esRequest, CancellationToken token)
     {
         var requestMessage = esRequest.ToHttpRequestMessage();
         try

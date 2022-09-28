@@ -16,6 +16,7 @@ public class HealthCheckTests
     [Test]
     public void ThrowsIfBadPort()
     {
+        // Arrange
         var badConfig = KafkaTestsHelper.GetClientConfig(KafkaTestsHelper.BadBootstrapServers);
         var badInputConfig = new KafkaInputConfig() { Client = badConfig, Topics = KafkaTestsHelper.InputTopics };
         var kafkaInputService = new KafkaInputService(badInputConfig);
@@ -25,6 +26,7 @@ public class HealthCheckTests
     [Test]
     public void ThrowsIfBigDelay()
     {
+        // Arrange
         var badInputConfig = new KafkaInputConfig() { Client = KafkaTestsHelper.GetClientConfig(KafkaTestsHelper.GoodBootstrapServers), Topics = KafkaTestsHelper.InputTopics };
         var kafkaInputService = new KafkaInputService(badInputConfig);
         Assert.Throws<KafkaException>(() => kafkaInputService.CheckHealth(0));
@@ -33,38 +35,26 @@ public class HealthCheckTests
     [Test]
     public void HealthCheckDoesntThrows()
     {
+        // Arrange
         var goodClientConfig = KafkaTestsHelper.GetClientConfig(KafkaTestsHelper.GoodBootstrapServers);
         var goodConfig = new KafkaInputConfig() { Client = goodClientConfig, Topics = KafkaTestsHelper.InputTopics };
         var kafkaInputService = new KafkaInputService(goodConfig);
-        if (KafkaTestsHelper.IsServerAvailable())
-        {
-            Assert.DoesNotThrow(() => kafkaInputService.CheckHealth(4));
-        }
-        else
-        {
-            Assert.Throws<KafkaException>(() => kafkaInputService.CheckHealth(4));
-        }
+        Assert.DoesNotThrow(() => kafkaInputService.CheckHealth(4));
     }
 
     [Test]
     public async Task ThrowsIfBadTopics()
     {
+        // Arrange
         var randomTopicName = "SomeRandomName13131931";
         var mockTopics = new List<string>() { randomTopicName };
         var clientGoodConfig = KafkaTestsHelper.GetClientConfig(KafkaTestsHelper.GoodBootstrapServers);
         var configWithBadTopics = new KafkaInputConfig() { Client = clientGoodConfig, Topics = mockTopics };
         var kafkaInputService = new KafkaInputService(configWithBadTopics);
-
-        if (KafkaTestsHelper.IsServerAvailable())
-        {
-            Assert.Throws<IOException>(() => kafkaInputService.CheckHealth(4));
-        }
-        else
-        {
-            Assert.Throws<KafkaException>(() => kafkaInputService.CheckHealth(4));
-        }
-
-
+        
+        //Assert
+        Assert.Throws<IOException>(() => kafkaInputService.CheckHealth(4));
+        
         //if kafka config has auto creating topics => delete after it was created 
         try
         {

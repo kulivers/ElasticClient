@@ -7,13 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Confluent.Kafka" Version="1.9.4-RC1" />
+        <PackageReference Include="Confluent.Kafka" Version="1.9.4-RC1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InputServices.Api\InputServices.Api.csproj" />
-      <ProjectReference Include="..\Localization\Localization.csproj" />
-      <ProjectReference Include="..\Utils\Utils.csproj" />
+        <ProjectReference Include="..\InputServices.Api\InputServices.Api.csproj"/>
+        <ProjectReference Include="..\Localization\Localization.csproj"/>
+        <ProjectReference Include="..\Utils\Utils.csproj"/>
     </ItemGroup>
 
 </Project>

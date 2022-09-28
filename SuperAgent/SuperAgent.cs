@@ -1,27 +1,25 @@
-using IOServices.Api;
 using Localization.SuperAgent;
 using Microsoft.VisualBasic;
-using Newtonsoft.Json;
 using Processor;
 using ProcessorsRunner;
 
 public class SuperAgent
 {
-    private readonly ProcessorsConfig _processorsConfig;
+    private readonly ProcessorsConfigs _processorsConfigs;
     private readonly ConnectorsConfig _connectorsConfig;
     private readonly string NoServiceForConnector = SuperAgentResources.NoServiceForConnector;
     public IProcessorsContainer ProcessorsContainer { get; }
     public List<IConnector> Connectors { get; set; }
 
-    public SuperAgent(AgentConfig agentConfig) : this(new ProcessorsConfig(agentConfig.Processors), new ConnectorsConfig(agentConfig.Connectors))
+    public SuperAgent(AgentConfig agentConfig) : this(new ProcessorsConfigs(agentConfig.Processors), new ConnectorsConfig(agentConfig.Connectors))
     {
     }
 
-    public SuperAgent(ProcessorsConfig processorsConfig, ConnectorsConfig connectorsConfig)
+    public SuperAgent(ProcessorsConfigs processorsConfigs, ConnectorsConfig connectorsConfig)
     {
-        _processorsConfig = processorsConfig;
+        _processorsConfigs = processorsConfigs;
         _connectorsConfig = connectorsConfig;
-        ProcessorsContainer = new ProcessorContainer(processorsConfig);
+        ProcessorsContainer = new ProcessorContainer(processorsConfigs);
         InitConnectors(connectorsConfig);
         ThrowIfConfigsNotValid();
         CheckHealth();
@@ -31,6 +29,8 @@ public class SuperAgent
     {
         Connectors = new List<IConnector>();
         var factory = new ConnectorFactory();
+        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1d));    
+        
         foreach (var connectorConfig in connectorsConfig.Connectors)
         {
             if (connectorConfig.Input == InputService.Kafka)
@@ -44,7 +44,7 @@ public class SuperAgent
             connector.OnReceive += (_, inputResponseModel) =>
             {
                 var destinationProcessor = connector.DestinationProcessor;
-                var response = ProcessorsContainer.Process(destinationProcessor, inputResponseModel.Data);
+                var response = ProcessorsContainer.Process(destinationProcessor, inputResponseModel.Data, cts.Token);
             };
         }
     }
@@ -64,7 +64,7 @@ public class SuperAgent
 
         void ValidateServicesConfig()
         {
-            foreach (var config in _processorsConfig.Processors)
+            foreach (var config in _processorsConfigs.Processors)
             {
                 File.Open(config.Dll, FileMode.Open, FileAccess.Read).Dispose();
                 File.Open(config.Config, FileMode.Open, FileAccess.Read).Dispose();
@@ -75,7 +75,7 @@ public class SuperAgent
         {
             foreach (var connectorConfig in _connectorsConfig.Connectors)
             {
-                if (!_processorsConfig.Processors.Any(cfg => cfg.Name == connectorConfig.Destination))
+                if (!_processorsConfigs.Processors.Any(cfg => cfg.Name == connectorConfig.Destination))
                 {
                     throw new ApplicationException(Strings.Format(NoServiceForConnector, connectorConfig.Destination));
                 }

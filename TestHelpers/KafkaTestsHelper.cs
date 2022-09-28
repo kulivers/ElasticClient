@@ -37,14 +37,19 @@ public class KafkaTestsHelper
         Acks = Acks.All
     };
 
-    public async Task CreateTopicAsync(string topicName)
+    public async Task CreateTopicAsync(string topicName, CancellationToken token)
     {
         var adminClient = GetAdminClient();
         try
         {
-            var topicSpecification = new TopicSpecification() { Name = topicName, NumPartitions = 4 };
-            var topicSpecifications = new List<TopicSpecification>() { topicSpecification };
-            await adminClient.CreateTopicsAsync(topicSpecifications, new CreateTopicsOptions());
+            while (!token.IsCancellationRequested)
+            {
+                token.ThrowIfCancellationRequested();
+                var topicSpecification = new TopicSpecification() { Name = topicName, NumPartitions = 4 };
+                var topicSpecifications = new List<TopicSpecification>() { topicSpecification };
+                await adminClient.CreateTopicsAsync(topicSpecifications,
+                    new CreateTopicsOptions() { OperationTimeout = TimeSpan.FromSeconds(10), RequestTimeout = TimeSpan.FromSeconds(10), });
+            }
         }
         catch (CreateTopicsException e)
         {
@@ -52,13 +57,18 @@ public class KafkaTestsHelper
         }
     }
 
-    public async Task DeleteTopicAsync(string topicName)
+    public async Task DeleteTopicAsync(string topicName, CancellationToken token)
     {
         var adminClient = GetAdminClient();
         try
         {
-            var topics = new []{topicName};
-            await adminClient.DeleteTopicsAsync(topics);
+            while (!token.IsCancellationRequested)
+            {
+                token.ThrowIfCancellationRequested();
+                var topics = new[] { topicName };
+                await adminClient.DeleteTopicsAsync(topics,
+                    new DeleteTopicsOptions() { OperationTimeout = TimeSpan.FromSeconds(10), RequestTimeout = TimeSpan.FromSeconds(10), });
+            }
         }
         catch (DeleteTopicsException)
         {
@@ -95,6 +105,7 @@ public class KafkaTestsHelper
                 var adminClient = GetAdminClient();
                 adminClient.GetMetadata(topic, TimeSpan.FromSeconds(4));
             }
+
             return true;
         }
         catch

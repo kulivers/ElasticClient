@@ -11,10 +11,10 @@ public class ProcessorContainer : IProcessorsContainer
     private readonly string UnknownProcessor = $"Unknown processor: {0}";
     public List<IProcessor?> Processors { get; }
 
-    public ProcessorContainer(ProcessorsConfig processorsConfig)
+    public ProcessorContainer(ProcessorsConfigs processorsConfigs)
     {
         Processors = new List<IProcessor?>();
-        foreach (var config in processorsConfig.Processors)
+        foreach (var config in processorsConfigs.Processors)
         {
             var assembly = Assembly.LoadFrom(config.Dll);
             var assTypes = assembly.GetTypes();
@@ -75,23 +75,6 @@ public class ProcessorContainer : IProcessorsContainer
         return Processors.FirstOrDefault(p => p?.ServiceName == serviceName);
     }
 
-    public TOut? Process<TIn, TOut>(string serviceName, TIn input)
-    {
-        var processor = (IProcessor<TIn, TOut>)GetProcessor(serviceName)!;
-        if (processor == null)
-        {
-            throw new InvalidOperationException(string.Format(UnknownProcessor, serviceName));
-        }
-
-        var processorType = processor.GetType();
-        var (tIn, tOut) = GetInputOutputTypes(processorType);
-
-        var method = processorType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .First(mi => mi.ReturnType == tOut && mi.GetParameters().Any(p => p.ParameterType == tIn) &&
-                         mi.Name == "Process");
-        return (TOut)method.Invoke(processor, new[] { (object)input! })!; //todo fix here cancelation toker
-    }
-
     private static (Type tIn, Type tOut) GetInputOutputTypes(Type containerType)
     {
         var iProcessorInterface = containerType.FindInterfaces(InterfaceFilter, typeof(IProcessor<,>).Name).First();
@@ -108,7 +91,24 @@ public class ProcessorContainer : IProcessorsContainer
         return typeName.Contains(criteriaOrEmpty);
     }
 
-    public object? Process(string processorName, string? message)
+    public TOut? Process<TIn, TOut>(string serviceName, TIn input, CancellationToken token)
+    {
+        var processor = (IProcessor<TIn, TOut>)GetProcessor(serviceName)!;
+        if (processor == null)
+        {
+            throw new InvalidOperationException(string.Format(UnknownProcessor, serviceName));
+        }
+
+        var processorType = processor.GetType();
+        var (tIn, tOut) = GetInputOutputTypes(processorType);
+
+        var method = processorType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .First(mi => mi.ReturnType == tOut && mi.GetParameters().Any(p => p.ParameterType == tIn) &&
+                         mi.Name == "Process");
+        return (TOut)method.Invoke(processor, new[] { (object)input!, token })!; //todo fix here cancelation toker
+    }
+
+    public object? Process(string processorName, string? message, CancellationToken token)
     {
         var processor = GetProcessor(processorName);
         if (processor == null)
@@ -122,7 +122,7 @@ public class ProcessorContainer : IProcessorsContainer
         var method = processorType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .First(mi => mi.ReturnType == tOut && mi.GetParameters().Any(p => p.ParameterType == tIn) &&
                          mi.Name == "Process");
-        return method.Invoke(processor, new[] { input });
+        return method.Invoke(processor, new[] { input, token });
     }
 
     public IEnumerator<IProcessor> GetEnumerator()

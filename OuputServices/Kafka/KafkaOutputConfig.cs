@@ -1,7 +1,5 @@
 using Confluent.Kafka;
 using Utils;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 namespace InputServices;
 

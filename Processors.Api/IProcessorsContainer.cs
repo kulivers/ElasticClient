@@ -9,6 +9,6 @@ public interface IProcessorsContainer : IEnumerable<IProcessor>
     void AddProcessor(IProcessor? processor);
     public IProcessor? GetProcessor(string serviceName);
 
-    public TOut? Process<TIn, TOut>(string serviceName, TIn input);
-    public object? Process(string processorName, string? message);
+    public TOut? Process<TIn, TOut>(string serviceName, TIn input, CancellationToken token);
+    public object? Process(string processorName, string? message, CancellationToken token);
 }

@@ -29,14 +29,14 @@ public class KafkaInputService : IInputService, IDisposable
     public event EventHandler<InputResponseModel>? OnReceive;
     public bool ReceivedAny { get; private set; }
 
-    public async Task StartReceive(CancellationToken appStop)
+    public async Task StartReceive(CancellationToken token)
     {
         var messagesToCommit = MessagesToCommit;
         StringConsumer.Subscribe(_inputTopics);
 
-        while (!appStop.IsCancellationRequested)
+        while (!token.IsCancellationRequested)
         {
-            var receive = StringConsumer.Consume(appStop);
+            var receive = StringConsumer.Consume(token);
             if (receive == null)
             {
                 continue;

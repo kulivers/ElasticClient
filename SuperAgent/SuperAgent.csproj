@@ -9,17 +9,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Connector\Connector.csproj" />
-      <ProjectReference Include="..\Processors.Api\Processors.Api.csproj" />
+        <ProjectReference Include="..\Connector\Connector.csproj" />
+        <ProjectReference Include="..\Connector.Api\Connector.Api.csproj" />
+        <ProjectReference Include="..\Processors.Api\Processors.Api.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Autofac" Version="6.4.0" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="Autofac" Version="6.4.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="QueueThrottler.cs" />
+        <Compile Remove="QueueThrottler.cs" />
     </ItemGroup>
 
 </Project>

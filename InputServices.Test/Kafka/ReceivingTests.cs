@@ -1,5 +1,4 @@
 using Confluent.Kafka;
-using Confluent.Kafka.Admin;
 using IOServices.Api;
 
 namespace InputServices.Test;
@@ -19,11 +18,6 @@ public class ReceivingTests
     [Test]
     public async Task ReturnsGoodResponses()
     {
-        if (!KafkaTestsHelper.IsServerAvailable())
-        {
-            return;
-        }
-
         //Arrange
         var producer = KafkaTestsHelper.GetStringProducer();
         var topicName = "SomeRandomTopic123121";
@@ -31,22 +25,28 @@ public class ReceivingTests
         var inputConfig = new KafkaInputConfig() { Client = config, Topics = new[] { topicName } };
         var inputService = new KafkaInputService(inputConfig);
         var toSend = new Message<int, string>() { Value = "Some value" };
+        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(100));
 
         //Act
-        await KafkaTestsHelper.CreateTopicAsync(topicName);
+        await KafkaTestsHelper.CreateTopicAsync(topicName, cts.Token);
         Task.Run(async () => await inputService.StartReceive(CancellationToken.None));
         InputResponseModel receivedModel = null;
         inputService.OnReceive += (sender, model) => { receivedModel = model; };
-        var deliveryResult = await producer.ProduceAsync(topicName, toSend);
+        await producer.ProduceAsync(topicName, toSend, cts.Token);
 
-        while (!inputService.ReceivedAny)
+        while (receivedModel == null)
         {
-            
+            if (cts.Token.IsCancellationRequested)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+            }
         }
+
         //Assert
         Assert.That(receivedModel?.Data, Is.EqualTo(toSend.Value));
 
         //Cleaning
-        await KafkaTestsHelper.DeleteTopicAsync(topicName);
+        var cts2 = new CancellationTokenSource(TimeSpan.FromSeconds(4));
+        await KafkaTestsHelper.DeleteTopicAsync(topicName, cts2.Token);
     }
 }

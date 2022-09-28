@@ -1,0 +1,11 @@
+processors:
+  - dll: D:\Work\myProcessorAgent\Helpers\MockFiles\ElasticProcessor.dll
+    config: D:\Work\myProcessorAgent\Helpers\MockFiles\processor-elastic.yaml
+    name: Elasticsearch writer1
+connectors:
+  - destination: Elasticsearch writer1
+    input: kafka
+    inputConfig: D:\Work\myProcessorAgent\Helpers\MockFiles\input-kafka.yaml
+    output: kafka
+    outputConfig: D:\Work\myProcessorAgent\Helpers\MockFiles\output-kafka.yaml
+    

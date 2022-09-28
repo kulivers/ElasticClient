@@ -38,7 +38,7 @@ namespace Localization {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Localization.ConnectorResources", typeof(ConnectorResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Localization.Connector.Api.ConnectorResources", typeof(ConnectorResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

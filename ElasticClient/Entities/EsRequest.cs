@@ -8,10 +8,7 @@ public class EsRequest
     public RequestParameters RequestParameters { get; set; }
     public string Data { get; set; }
 
-    public EsRequest()
-    {
-    }
-
+    
     public EsRequest(HostConfig hostConfig, RequestParameters requestParameters, string data)
     {
         HostConfig = hostConfig;

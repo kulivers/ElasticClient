@@ -4,18 +4,11 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>KafkaConnector</RootNamespace>
+        <RootNamespace>ConnectorsImp</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Confluent.Kafka" Version="1.9.4-RC1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\InputServices\InputServices.csproj" />
-      <ProjectReference Include="..\Localization\Localization.csproj" />
-      <ProjectReference Include="..\OuputServices\OuputServices.csproj" />
-      <ProjectReference Include="..\Processors.Api\Processors.Api.csproj" />
+      <ProjectReference Include="..\Connector.Api\Connector.Api.csproj" />
     </ItemGroup>
 
 </Project>
