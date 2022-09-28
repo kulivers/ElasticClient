@@ -7,7 +7,7 @@ public class Connector : IConnector
     public IInputService InputService { get; }
     public IOutputService? OutputService { get; }
     public string DestinationProcessor { get; }
-    private double SecondsToResponse => 5;
+    private const double SecondsToResponse = 5;
     public event EventHandler<InputResponseModel>? OnReceive;
 
     internal Connector(string destinationProcessor, IInputService inputService, IOutputService? outputService = null)
@@ -15,10 +15,10 @@ public class Connector : IConnector
         InputService = inputService;
         OutputService = outputService;
         DestinationProcessor = destinationProcessor;
-        InputService.OnReceive += CallOnReceiveMethod;
+        InputService.OnReceive += CallOnReceive;
     }
 
-    private async void CallOnReceiveMethod(object? sender, object inputResponseModel)
+    private async void CallOnReceive(object? sender, object inputResponseModel)
     {
         var casted = (InputResponseModel)inputResponseModel;
         OnReceive?.Invoke(sender, casted);

@@ -8,7 +8,6 @@ namespace InputServices;
 public class KafkaInputService : IInputService, IDisposable
 {
     private static readonly string TopicNotAvailable = IOServicesRecources.TopicNotAvailable;
-
     private readonly IEnumerable<string> _inputTopics;
     private readonly ConsumerConfig _consumerConfig;
     private IConsumer<int, string> StringConsumer { get; }

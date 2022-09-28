@@ -1,5 +1,6 @@
 public class ConnectorsConfig
 {
+    //for config parsing
     public IEnumerable<ConnectorConfig> Connectors { get; set; }
 
     public ConnectorsConfig(IEnumerable<ConnectorConfig> connectors)
