@@ -4,6 +4,7 @@ using ElasticClient;
 using Localization.Processors;
 using Newtonsoft.Json;
 using Processor;
+using Processor.Api;
 using ProcessorsRunner;
 
 public class ProcessorContainer : IProcessorsContainer
@@ -119,6 +120,8 @@ public class ProcessorContainer : IProcessorsContainer
 
         var processorType = processor.GetType();
         var (tIn, tOut) = GetInputOutputTypes(processorType);
+        var processorOutput = typeof(ProcessorOutput<>);
+        tOut = processorOutput.MakeGenericType(tOut);
         var input = message == null ? null : JsonConvert.DeserializeObject(message, tIn);
         var method = processorType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .First(mi => mi.ReturnType == tOut && mi.GetParameters().Any(p => p.ParameterType == tIn) &&

@@ -1,5 +1,7 @@
 ﻿using Localization.Processors;
 using Processor;
+using Processor.Api;
+using Processor.Api.Exceptions;
 
 namespace ElasticClient;
 
@@ -7,6 +9,7 @@ namespace ElasticClient;
 public class ElasticProcessor : IProcessor<EsRequest, EsResponse>
 {
     private readonly EsClient _esClient;
+
     private readonly string NotSupportedConfigType = ProcessorsResources.NotSupportedConfigType;
     public string Name => ProcessorConfig.Name;
     public ProcessorConfig ProcessorConfig { get; }
@@ -31,21 +34,53 @@ public class ElasticProcessor : IProcessor<EsRequest, EsResponse>
         await _esClient.CheckElasticAvailable(SecondsToResponse);
     }
 
-    public EsResponse Process(EsRequest value, CancellationToken token)
+    public ProcessorOutput<EsResponse> Process(EsRequest value, CancellationToken token)
     {
-        return _esClient.WriteRecord(value, token);
+        try
+        {
+            var response = _esClient.WriteRecord(value, token);
+            var output = new ProcessorOutput<EsResponse>(response);
+            return output;
+        }
+        catch (TaskCanceledException ex)
+        {
+            var bigDelayFromElasticException = new TooBigDelayFromElasticException(value.HostConfig.Host);
+            var output = new ProcessorOutput<EsResponse>(bigDelayFromElasticException);
+            return output;
+        }
+        catch (Exception e)
+        {
+            var output = new ProcessorOutput<EsResponse>(e);
+            return output;
+        }
     }
 
-    public async Task<EsResponse> ProcessAsync(EsRequest value, CancellationToken token)
+    public async Task<ProcessorOutput<EsResponse>> ProcessAsync(EsRequest value, CancellationToken token)
     {
-        return await _esClient.WriteRecordAsync(value, token);
+        try
+        {
+            var response = await _esClient.WriteRecordAsync(value, token);
+            var output = new ProcessorOutput<EsResponse>(response);
+            return output;
+        }
+        catch (TaskCanceledException ex)
+        {
+            var bigDelayFromElasticException = new TooBigDelayFromElasticException(value.HostConfig.Host);
+            var output = new ProcessorOutput<EsResponse>(bigDelayFromElasticException);
+            return output;
+        }
+        catch (Exception e)
+        {
+            var output = new ProcessorOutput<EsResponse>(e);
+            return output;
+        }
     }
 
     public TOut Process<TIn, TOut>(TIn value, CancellationToken token)
     {
         if (value is EsRequest esRequest)
         {
-            var response = Process(esRequest,token);
+            var response = Process(esRequest, token);
             if (response is TOut castedResponse)
                 return castedResponse;
         }

@@ -25,8 +25,8 @@ public class KafkaInput : IInputService, IDisposable
     }
 
     private const int MessagesToCommit = 1000;
-    public event EventHandler<InputModel>? OnReceive;
-
+    public event EventHandler<object> OnReceive;
+    
 
     public async Task StartReceive(CancellationToken token)
     {
@@ -41,8 +41,8 @@ public class KafkaInput : IInputService, IDisposable
                 continue;
             }
 
-
-            CallOnMessageEvent(received);
+            var value = received.Message.Value;
+            CallOnMessageEvent(value);
 
             messagesToCommit--;
             if (messagesToCommit <= 0)
@@ -61,7 +61,7 @@ public class KafkaInput : IInputService, IDisposable
         {
             foreach (var topic in _inputTopics)
             {
-                var metadata = adminClient.GetMetadata(topic, TimeSpan.FromSeconds(secondsToResponse));
+                var metadata = adminClient.GetMetadata(topic,  TimeSpan.FromSeconds(secondsToResponse));
                 foreach (var topicMetadata in metadata.Topics)
                 {
                     if (topicMetadata.Error.IsError)
@@ -74,11 +74,9 @@ public class KafkaInput : IInputService, IDisposable
         }
     }
 
-    private protected virtual void CallOnMessageEvent(ConsumeResult<int, string> recieved)
+    private protected virtual void CallOnMessageEvent(object recieved)
     {
-        var message = recieved.Message.Value;
-        var inputModel = new InputModel(message);
-        OnReceive?.Invoke(this, inputModel);
+        OnReceive?.Invoke(this, recieved);
     }
 
     public void Dispose()

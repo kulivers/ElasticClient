@@ -1,4 +1,6 @@
-﻿namespace Processor;
+﻿using Processor.Api;
+
+namespace Processor;
 
 public interface IProcessor  
 {
@@ -9,6 +11,6 @@ public interface IProcessor
 
 public interface IProcessor<TIn, TOut> : IProcessor
 {
-    public TOut Process(TIn value, CancellationToken token);
-    public Task<TOut> ProcessAsync(TIn value, CancellationToken token);
+    public ProcessorOutput<TOut> Process(TIn value, CancellationToken token);
+    public Task<ProcessorOutput<TOut>> ProcessAsync(TIn value, CancellationToken token);
 }

@@ -7,7 +7,7 @@ public class EsClient
 {
     private readonly string ElasticSearchNotAvailable = ElasticClientResources.ElasticSearchNotAvailable;
     private readonly string ElasticSearchNotHealthy = ElasticClientResources.ElasticSearchNotHealthy;
-    private readonly string TooBigDelayFromElastic = ElasticClientResources.TooBigDelayFromElastic;
+
     private const string AuthorizationHeaderKey = "Authorization";
     private const string ContentTypeHeaderValue = "application/json";
     private HostConfig HostConfig { get; }
@@ -40,14 +40,10 @@ public class EsClient
         var requestIri = new Uri($"https://{HostConfig.Host}:{HostConfig.Port}/_cat/health");
         var delay = TimeSpan.FromSeconds(secondsToResponse);
         var cts = new CancellationTokenSource(delay);
+
         try
         {
             var responseMessage = await Client.GetAsync(requestIri, cts.Token);
-
-            if (responseMessage == null)
-            {
-                throw new HttpRequestException(string.Format(ElasticSearchNotAvailable, HostConfig.Host, HostConfig.Port, delay.Seconds));
-            }
 
             if (!responseMessage.IsSuccessStatusCode)
             {
@@ -58,8 +54,7 @@ public class EsClient
         }
         catch (TaskCanceledException e)
         {
-            var exInfo = string.Format(TooBigDelayFromElastic, HostConfig.Host);
-            throw new TaskCanceledException(exInfo);
+            throw new HttpRequestException(string.Format(ElasticSearchNotAvailable, HostConfig.Host, HostConfig.Port, delay.Seconds));
         }
     }
 
@@ -78,20 +73,8 @@ public class EsClient
     public EsResponse WriteRecord(EsRequest esRequest, CancellationToken token) //todo fix dat
     {
         var requestMessage = esRequest.ToHttpRequestMessage();
-        try
-        {
-            var result = Client.Send(requestMessage, token).ToEsResponseAsync().Result;
-            return result;
-        }
-        catch (TaskCanceledException)
-        {
-            var exInfo = string.Format(TooBigDelayFromElastic, requestMessage.RequestUri?.Host);
-            return new EsResponse(false, null, exInfo);
-        }
-        catch (Exception e)
-        {
-            return new EsResponse(false, null, e.Message);
-        }
+        var result = Client.Send(requestMessage, token).ToEsResponseAsync().Result;
+        return result;
     }
 
     public Task<EsResponse> WriteRecordAsync(string index, CancellationToken token, string? data = null, string? docId = null, string? type = "_doc")
@@ -109,20 +92,9 @@ public class EsClient
     public async Task<EsResponse> WriteRecordAsync(EsRequest esRequest, CancellationToken token)
     {
         var requestMessage = esRequest.ToHttpRequestMessage();
-        try
-        {
-            var response = await Client.SendAsync(requestMessage, token);
-            var asEsResponse = await response.ToEsResponseAsync();
-            return asEsResponse;
-        }
-        catch (TaskCanceledException e)
-        {
-            var exInfo = string.Format(TooBigDelayFromElastic, requestMessage.RequestUri?.Host);
-            return new EsResponse(false, null, exInfo);
-        }
-        catch (Exception e)
-        {
-            return new EsResponse(false, null, e.Message);
-        }
+
+        var response = await Client.SendAsync(requestMessage, token);
+        var asEsResponse = await response.ToEsResponseAsync();
+        return asEsResponse;
     }
 }

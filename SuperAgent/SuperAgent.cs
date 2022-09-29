@@ -42,11 +42,11 @@ public class SuperAgent
 
         foreach (var connector in Connectors)
         {
-            connector.OnReceive += (_, inputResponseModel) =>
+            connector.OnReceive += (_, data) =>
             {
                 var destinationProcessor = connector.DestinationProcessor;
                 var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1));
-                var response = ProcessorsContainer.Process(destinationProcessor, inputResponseModel.Data, cts.Token);
+                var response = ProcessorsContainer.Process(destinationProcessor, data, cts.Token);
                 if (response != null)
                 {
                     connector.SendToOutputService(response);
@@ -59,7 +59,7 @@ public class SuperAgent
     {
         foreach (var connector in Connectors)
         {
-            connector.StartReceive(CancellationToken.None).Start();
+            connector.StartReceive(CancellationToken.None);
         }
     }
 

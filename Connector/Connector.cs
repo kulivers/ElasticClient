@@ -1,4 +1,6 @@
+    using System.Net.Http.Json;
 using IOServices.Api;
+using Newtonsoft.Json;
 
 namespace ProcessorsRunner;
 
@@ -8,7 +10,7 @@ public class Connector : IConnector
     public IOutputService? OutputService { get; }
     public string DestinationProcessor { get; }
     private const double SecondsToResponse = 5;
-    public event EventHandler<InputModel>? OnReceive;
+    public event EventHandler<string>? OnReceive;
 
     internal Connector(string destinationProcessor, IInputService inputService, IOutputService? outputService = null)
     {
@@ -18,10 +20,9 @@ public class Connector : IConnector
         InputService.OnReceive += CallOnReceive;
     }
 
-    private async void CallOnReceive(object? sender, object inputResponseModel)
+    private void CallOnReceive(object? sender, object recieved)
     {
-        var casted = (InputModel)inputResponseModel;
-        OnReceive?.Invoke(sender, casted);
+        OnReceive?.Invoke(sender, (string)recieved);
     }
 
     public async Task StartReceive(CancellationToken token)
@@ -37,6 +38,7 @@ public class Connector : IConnector
 
     public async Task SendToOutputService(object toSend)
     {
+        Console.WriteLine(JsonConvert.SerializeObject(toSend));
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(SecondsToResponse)); 
         if (OutputService != null)
         {
