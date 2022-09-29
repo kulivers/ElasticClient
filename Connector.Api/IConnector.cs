@@ -10,4 +10,5 @@ public interface IConnector
     event EventHandler<InputResponseModel> OnReceive;
     Task StartReceive(CancellationToken token);
     void CheckHealth();
+    Task SendToOutputService(object toSend);
 }

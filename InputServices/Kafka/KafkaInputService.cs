@@ -35,13 +35,13 @@ public class KafkaInputService : IInputService, IDisposable
 
         while (!token.IsCancellationRequested)
         {
-            var receive = StringConsumer.Consume(token);
-            if (receive == null)
+            var received = StringConsumer.Consume(token);
+            if (received == null)
             {
                 continue;
             }
 
-            var value = receive.Message.Value;
+            var value = received.Message.Value;
             CallOnMessageEvent(value);
 
             messagesToCommit--;
@@ -53,6 +53,11 @@ public class KafkaInputService : IInputService, IDisposable
         }
     }
 
+    public void Commit()
+    {
+        var received = StringConsumer.Consume();
+        StringConsumer.Commit(received);
+    }
     public void CheckHealth(double secondsToResponse)
     {
         var adminConfig = new AdminClientConfig(_consumerConfig);

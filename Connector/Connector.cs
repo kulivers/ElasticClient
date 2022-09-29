@@ -22,10 +22,6 @@ public class Connector : IConnector
     {
         var casted = (InputResponseModel)inputResponseModel;
         OnReceive?.Invoke(sender, casted);
-        if (casted.Data != null)
-        {
-            await SendToOutputService(casted.Data);
-        }
     }
 
     public async Task StartReceive(CancellationToken token)
@@ -39,7 +35,7 @@ public class Connector : IConnector
         OutputService?.CheckHealth(SecondsToResponse);
     }
 
-    private async Task SendToOutputService(object toSend)
+    public async Task SendToOutputService(object toSend)
     {
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(SecondsToResponse)); 
         if (OutputService != null)

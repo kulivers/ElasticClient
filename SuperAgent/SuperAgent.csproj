@@ -11,6 +11,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Connector\Connector.csproj" />
         <ProjectReference Include="..\Connector.Api\Connector.Api.csproj" />
+        <ProjectReference Include="..\ElasticProcessor\ElasticProcessor.csproj" />
         <ProjectReference Include="..\Processors.Api\Processors.Api.csproj" />
     </ItemGroup>
 

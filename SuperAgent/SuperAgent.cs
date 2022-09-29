@@ -1,5 +1,6 @@
 using Localization.SuperAgent;
 using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 using Processor;
 using ProcessorsRunner;
 
@@ -29,7 +30,7 @@ public class SuperAgent
     {
         Connectors = new List<IConnector>();
         var factory = new ConnectorFactory();
-        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1d));    
+            
         
         foreach (var connectorConfig in connectorsConfig.Connectors)
         {
@@ -44,7 +45,12 @@ public class SuperAgent
             connector.OnReceive += (_, inputResponseModel) =>
             {
                 var destinationProcessor = connector.DestinationProcessor;
+                var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1));
                 var response = ProcessorsContainer.Process(destinationProcessor, inputResponseModel.Data, cts.Token);
+                if (response != null)
+                {
+                    connector.SendToOutputService(response);
+                };
             };
         }
     }

@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\ElasticProcessor\ElasticProcessor.csproj" />
         <ProjectReference Include="..\InputServices\InputServices.csproj" />
         <ProjectReference Include="..\OuputServices\OuputServices.csproj" />
         <ProjectReference Include="..\Processors.Api\Processors.Api.csproj" />
