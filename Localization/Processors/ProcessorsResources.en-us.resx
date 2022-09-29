@@ -14,4 +14,10 @@
     <data name="NotSupportedConfigType" xml:space="preserve">
         <value>Not supported type of config file. Now supported types: {0}</value>
     </data>
+    <data name="CantLoadService" xml:space="preserve">
+        <value>Cant load service {0}</value>
+    </data>
+    <data name="UnknownProcessor" xml:space="preserve">
+        <value>Unknown processor: {0}</value>
+    </data>
 </root>

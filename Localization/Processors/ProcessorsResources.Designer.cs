@@ -60,11 +60,29 @@ namespace Localization.Processors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cant load service {0}.
+        /// </summary>
+        public static string CantLoadService {
+            get {
+                return ResourceManager.GetString("CantLoadService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not supported type of config file. Now supported types: {0}.
         /// </summary>
         public static string NotSupportedConfigType {
             get {
                 return ResourceManager.GetString("NotSupportedConfigType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown processor: {0}.
+        /// </summary>
+        public static string UnknownProcessor {
+            get {
+                return ResourceManager.GetString("UnknownProcessor", resourceCulture);
             }
         }
     }

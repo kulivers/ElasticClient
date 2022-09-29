@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Reflection;
 using ElasticClient;
+using Localization.Processors;
 using Newtonsoft.Json;
 using Processor;
 using ProcessorsRunner;
 
 public class ProcessorContainer : IProcessorsContainer
 {
-    private readonly string CantLoadService = $"Cant load service {0}";
-    private readonly string UnknownProcessor = $"Unknown processor: {0}";
+    private readonly string CantLoadService = ProcessorsResources.CantLoadService;
+    private readonly string UnknownProcessor = ProcessorsResources.UnknownProcessor;
     public List<IProcessor?> Processors { get; }
 
     public ProcessorContainer(ProcessorsConfigs processorsConfigs)

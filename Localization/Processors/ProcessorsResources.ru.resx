@@ -14,4 +14,10 @@
     <data name="NotSupportedConfigType" xml:space="preserve">
         <value>Не поддерживемый тип конфиг файла. Сейчас поддерживаются слеждующие: {0}</value>
     </data>
+    <data name="CantLoadService" xml:space="preserve">
+        <value>Невозможно загрузить сервис {0}</value>
+    </data>
+    <data name="UnknownProcessor" xml:space="preserve">
+        <value>Неизвестный просессор: {0}</value>
+    </data>
 </root>
