@@ -23,14 +23,14 @@ public class ReceivingTests
         var topicName = "SomeRandomTopic123121";
         var config = KafkaTestsHelper.GetClientConfig(KafkaTestsHelper.GoodBootstrapServers);
         var inputConfig = new KafkaInputConfig() { Client = config, Topics = new[] { topicName } };
-        var inputService = new KafkaInputService(inputConfig);
+        var inputService = new KafkaInput(inputConfig);
         var toSend = new Message<int, string>() { Value = "Some value" };
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(100));
 
         //Act
         await KafkaTestsHelper.CreateTopicAsync(topicName, cts.Token);
         Task.Run(async () => await inputService.StartReceive(CancellationToken.None));
-        InputResponseModel receivedModel = null;
+        InputModel receivedModel = null;
         inputService.OnReceive += (sender, model) => { receivedModel = model; };
         await producer.ProduceAsync(topicName, toSend, cts.Token);
 

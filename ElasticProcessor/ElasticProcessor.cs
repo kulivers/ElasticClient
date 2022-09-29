@@ -8,7 +8,7 @@ public class ElasticProcessor : IProcessor<EsRequest, EsResponse>
 {
     private readonly EsClient _esClient;
     private readonly string NotSupportedConfigType = ProcessorsResources.NotSupportedConfigType;
-    public string ServiceName => ProcessorConfig.Name;
+    public string Name => ProcessorConfig.Name;
     public ProcessorConfig ProcessorConfig { get; }
     private double SecondsToResponse => 5;
 
@@ -53,5 +53,8 @@ public class ElasticProcessor : IProcessor<EsRequest, EsResponse>
         throw new InvalidCastException();
     }
 
-    public override int GetHashCode() => ServiceName.GetHashCode() ^ ProcessorConfig.GetHashCode();
+    public override int GetHashCode()
+    {
+        return Name.GetHashCode() ^ ProcessorConfig.GetHashCode();
+    }
 }

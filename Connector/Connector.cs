@@ -8,7 +8,7 @@ public class Connector : IConnector
     public IOutputService? OutputService { get; }
     public string DestinationProcessor { get; }
     private const double SecondsToResponse = 5;
-    public event EventHandler<InputResponseModel>? OnReceive;
+    public event EventHandler<InputModel>? OnReceive;
 
     internal Connector(string destinationProcessor, IInputService inputService, IOutputService? outputService = null)
     {
@@ -20,7 +20,7 @@ public class Connector : IConnector
 
     private async void CallOnReceive(object? sender, object inputResponseModel)
     {
-        var casted = (InputResponseModel)inputResponseModel;
+        var casted = (InputModel)inputResponseModel;
         OnReceive?.Invoke(sender, casted);
     }
 
@@ -40,9 +40,9 @@ public class Connector : IConnector
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(SecondsToResponse)); 
         if (OutputService != null)
         {
-            //here we can do something with response after output
             try
             {
+                //here we can do something with response after output
                 var result = await OutputService.Send(toSend, cts.Token);
             }
             catch (TaskCanceledException exception)

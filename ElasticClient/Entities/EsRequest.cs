@@ -1,7 +1,7 @@
 using System.Text;
 using ElasticClient;
 
-[ProcessElement(nameof(EsRequest), ProcessingAttributeBehaviourType.Input)] //todo ask this is ref to processors.api
+[ProcessElement(nameof(EsRequest), ProcessingAttributeBehaviourType.Input)] 
 public class EsRequest
 {
     public HostConfig HostConfig { get; set; }

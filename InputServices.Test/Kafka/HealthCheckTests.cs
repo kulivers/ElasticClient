@@ -19,7 +19,7 @@ public class HealthCheckTests
         // Arrange
         var badConfig = KafkaTestsHelper.GetClientConfig(KafkaTestsHelper.BadBootstrapServers);
         var badInputConfig = new KafkaInputConfig() { Client = badConfig, Topics = KafkaTestsHelper.InputTopics };
-        var kafkaInputService = new KafkaInputService(badInputConfig);
+        var kafkaInputService = new KafkaInput(badInputConfig);
         Assert.Throws<KafkaException>(() => kafkaInputService.CheckHealth(4));
     }
 
@@ -28,7 +28,7 @@ public class HealthCheckTests
     {
         // Arrange
         var badInputConfig = new KafkaInputConfig() { Client = KafkaTestsHelper.GetClientConfig(KafkaTestsHelper.GoodBootstrapServers), Topics = KafkaTestsHelper.InputTopics };
-        var kafkaInputService = new KafkaInputService(badInputConfig);
+        var kafkaInputService = new KafkaInput(badInputConfig);
         Assert.Throws<KafkaException>(() => kafkaInputService.CheckHealth(0));
     }
 
@@ -38,7 +38,7 @@ public class HealthCheckTests
         // Arrange
         var goodClientConfig = KafkaTestsHelper.GetClientConfig(KafkaTestsHelper.GoodBootstrapServers);
         var goodConfig = new KafkaInputConfig() { Client = goodClientConfig, Topics = KafkaTestsHelper.InputTopics };
-        var kafkaInputService = new KafkaInputService(goodConfig);
+        var kafkaInputService = new KafkaInput(goodConfig);
         Assert.DoesNotThrow(() => kafkaInputService.CheckHealth(4));
     }
 
@@ -50,7 +50,7 @@ public class HealthCheckTests
         var mockTopics = new List<string>() { randomTopicName };
         var clientGoodConfig = KafkaTestsHelper.GetClientConfig(KafkaTestsHelper.GoodBootstrapServers);
         var configWithBadTopics = new KafkaInputConfig() { Client = clientGoodConfig, Topics = mockTopics };
-        var kafkaInputService = new KafkaInputService(configWithBadTopics);
+        var kafkaInputService = new KafkaInput(configWithBadTopics);
         
         //Assert
         Assert.Throws<IOException>(() => kafkaInputService.CheckHealth(4));

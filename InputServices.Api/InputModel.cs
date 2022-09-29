@@ -1,27 +1,27 @@
 namespace IOServices.Api;
 
-public class InputResponseModel
+public class InputModel
 {
     public bool Success { get; set; }
     public Exception? Exception { get; set; }
     public string? Data { get; set; }
 
 
-    public InputResponseModel(string? data = null)
+    public InputModel(string? data = null)
     {
         Success = true;
         Exception = null;
         Data = data;
     }
     
-    public InputResponseModel(Exception? exception)
+    public InputModel(Exception? exception)
     {
         Success = false;
         Exception = exception;
         Data = null;
     }
 
-    public InputResponseModel(bool success, Exception? exception, string? data)
+    public InputModel(bool success, Exception? exception, string? data)
     {
         Success = success;
         Exception = exception;

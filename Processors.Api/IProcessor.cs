@@ -2,7 +2,7 @@
 
 public interface IProcessor  
 {
-    string ServiceName { get; }
+    string Name { get; }
     ProcessorConfig ProcessorConfig { get; }
     void CheckHealth();
 }

@@ -25,7 +25,7 @@ public class ProcessorContainer : IProcessorsContainer
                 var factoryInstance = Activator.CreateInstance(factoryType);
                 var factoryMethodName = typeof(IProcessorFactory<,>).GetMethods().First().Name;
                 var factoryMethod = factoryType.GetMethod(factoryMethodName);
-                var serviceInstance = factoryMethod?.Invoke(factoryInstance, new[] { config });
+                var serviceInstance = factoryMethod?.Invoke(factoryInstance, new object[] { config });
                 if (serviceInstance is IProcessor processor)
                 {
                     AddProcessor(processor);
@@ -73,7 +73,7 @@ public class ProcessorContainer : IProcessorsContainer
 
     public IProcessor? GetProcessor(string serviceName)
     {
-        return Processors.FirstOrDefault(p => p?.ServiceName == serviceName);
+        return Processors.FirstOrDefault(p => p?.Name == serviceName);
     }
 
     private static (Type tIn, Type tOut) GetInputOutputTypes(Type containerType)
@@ -106,7 +106,7 @@ public class ProcessorContainer : IProcessorsContainer
         var method = processorType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
             .First(mi => mi.ReturnType == tOut && mi.GetParameters().Any(p => p.ParameterType == tIn) &&
                          mi.Name == "Process");
-        return (TOut)method.Invoke(processor, new[] { (object)input!, token })!; //todo fix here cancelation toker
+        return (TOut)method.Invoke(processor, new[] { (object)input!, token })!; 
     }
 
     public object? Process(string processorName, string? message, CancellationToken token)

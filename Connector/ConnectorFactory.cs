@@ -20,7 +20,7 @@ public class ConnectorFactory
         if (config.Input == InputService.Kafka)
         {
             var inputConfig = new KafkaInputConfig(config.InputConfig);
-            inputService = new KafkaInputService(inputConfig);
+            inputService = new KafkaInput(inputConfig);
         }
 
         if (config.Output == OutputService.Kafka)
